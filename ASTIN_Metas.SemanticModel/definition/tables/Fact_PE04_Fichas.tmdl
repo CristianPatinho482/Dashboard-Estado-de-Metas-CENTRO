@@ -1,0 +1,136 @@
+table Fact_PE04_Fichas
+	lineageTag: f1a6259a-fd52-45ca-b87c-b76c4c4da804
+
+	column ID_REGISTRO_UUID
+		dataType: string
+		isHidden
+		lineageTag: 9ea2c65c-714d-44ee-b698-4237c47913f9
+		summarizeBy: none
+		sourceColumn: ID_REGISTRO_UUID
+
+	column ID_PERIODO
+		dataType: int64
+		formatString: 0
+		lineageTag: c3f6af58-dd87-4c9e-9345-fd2e08c5976a
+		summarizeBy: none
+		sourceColumn: ID_PERIODO
+
+	column CODIGO_FICHA
+		dataType: int64
+		formatString: 0
+		lineageTag: df414f25-fd9c-402d-9b2b-053fd620b7d8
+		summarizeBy: none
+		sourceColumn: CODIGO_FICHA
+
+	column NOMBRE_PROGRAMA
+		dataType: string
+		lineageTag: a4fc5282-ed74-4a20-8a46-f9d3469fadcc
+		summarizeBy: none
+		sourceColumn: NOMBRE_PROGRAMA
+
+	column CODIGO_JORNADA
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b0a05c97-fd16-49e6-8d22-dbb47b989b6e
+		summarizeBy: none
+		sourceColumn: CODIGO_JORNADA
+
+	column NOMBRE_JORNADA
+		dataType: string
+		lineageTag: e9beb31b-8938-4985-adcb-b1aed1350271
+		summarizeBy: none
+		sourceColumn: NOMBRE_JORNADA
+
+	column MODALIDAD_FORMACION
+		dataType: string
+		lineageTag: 35265c1a-4b52-4d99-9d64-caf0678c55e3
+		summarizeBy: none
+		sourceColumn: MODALIDAD_FORMACION
+
+	column ESTADO_CURSO
+		dataType: string
+		lineageTag: f8e8a545-5c02-4d99-b81f-7db3499a2c3b
+		summarizeBy: none
+		sourceColumn: ESTADO_CURSO
+
+	column NIVEL_FORMACION
+		dataType: string
+		lineageTag: a3fb3767-bd2e-4315-801b-05c61f14e577
+		summarizeBy: none
+		sourceColumn: NIVEL_FORMACION
+
+	column APRENDICES_MATRICULADOS
+		dataType: int64
+		formatString: #,##0
+		lineageTag: ddc4d4a3-7478-4cee-8f28-79cbd668926a
+		summarizeBy: sum
+		sourceColumn: APRENDICES_MATRICULADOS
+
+	column APRENDICES_ACTIVOS
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 2139334c-8f8b-462f-a69d-a07f91454bd9
+		summarizeBy: sum
+		sourceColumn: APRENDICES_ACTIVOS
+
+	column APRENDICES_CANCELADOS
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 041f3927-dc80-4569-af2d-aed55962fddc
+		summarizeBy: sum
+		sourceColumn: APRENDICES_CANCELADOS
+
+	column TOTAL_HORAS
+		dataType: double
+		formatString: #,##0.0
+		lineageTag: 9a344fad-c7ea-4a92-8efa-977777d47ac9
+		summarizeBy: sum
+		sourceColumn: TOTAL_HORAS
+
+	column IdCentro
+		dataType: int64
+		formatString: 0
+		lineageTag: f72cbae6-9632-4841-b919-b40c0b676a4f
+		summarizeBy: none
+		sourceColumn: IdCentro
+
+	column ORIGEN_ARCHIVO
+		dataType: string
+		isHidden
+		lineageTag: c9948331-fb34-41bd-ac02-3faa19648a13
+		summarizeBy: none
+		sourceColumn: ORIGEN_ARCHIVO
+
+	partition Fact_PE04_Fichas = m
+		mode: import
+		source =
+				let
+				    Ruta = RutaCurados & "\pe04",
+				    Archivos = try Folder.Files(Ruta) otherwise #table({"Content", "Name", "Extension"}, {}),
+				    Csvs = Table.SelectRows(Archivos, each Text.Lower([Extension]) = ".csv"),
+				    Columnas = {"ID_REGISTRO_UUID", "ID_PERIODO", "CODIGO_FICHA", "NOMBRE_PROGRAMA", "CODIGO_JORNADA", "NOMBRE_JORNADA", "MODALIDAD_FORMACION", "ESTADO_CURSO", "NIVEL_FORMACION", "APRENDICES_MATRICULADOS", "APRENDICES_ACTIVOS", "APRENDICES_CANCELADOS", "TOTAL_HORAS", "IdCentro", "ORIGEN_ARCHIVO"},
+				    Esquema = type table [
+				        ID_REGISTRO_UUID = text, ID_PERIODO = number, CODIGO_FICHA = number, NOMBRE_PROGRAMA = text,
+				        CODIGO_JORNADA = number, NOMBRE_JORNADA = text, MODALIDAD_FORMACION = text, ESTADO_CURSO = text,
+				        NIVEL_FORMACION = text, APRENDICES_MATRICULADOS = number, APRENDICES_ACTIVOS = number,
+				        APRENDICES_CANCELADOS = number, TOTAL_HORAS = number, IdCentro = number, ORIGEN_ARCHIVO = text
+				    ],
+				    Tablas = List.Transform(Table.ToRecords(Csvs), each
+				        let
+				            t = Table.PromoteHeaders(Csv.Document([Content], [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv])),
+				            horas = Table.TransformColumns(t, {{"TOTAL_HORAS", each try Number.FromText(Text.From(_), "en-US") otherwise 0, type number}}),
+				            tipado = Table.TransformColumnTypes(horas, {
+				                {"ID_PERIODO", Int64.Type}, {"CODIGO_FICHA", Int64.Type}, {"CODIGO_JORNADA", Int64.Type},
+				                {"APRENDICES_MATRICULADOS", Int64.Type}, {"APRENDICES_ACTIVOS", Int64.Type},
+				                {"APRENDICES_CANCELADOS", Int64.Type}, {"TOTAL_HORAS", type number}, {"IdCentro", Int64.Type}
+				            })
+				        in
+				            Table.SelectColumns(tipado, Columnas)),
+				    Final = if List.IsEmpty(Tablas) then #table(Esquema, {}) else Table.Combine(Tablas),
+				    Unicos = Table.Distinct(Final, {"ID_REGISTRO_UUID"})
+				in
+				    Table.Buffer(Unicos)
+
+	annotation PBI_ResultType = Table
+

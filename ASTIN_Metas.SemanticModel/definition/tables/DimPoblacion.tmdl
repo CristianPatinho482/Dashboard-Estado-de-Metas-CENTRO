@@ -1,0 +1,81 @@
+table DimPoblacion
+	lineageTag: ca2e28bd-2578-4fa4-be06-c2d9cefa3ef3
+
+	column IdPoblacion
+		dataType: double
+		formatString: 0
+		lineageTag: 280fc520-5097-46fb-aad4-ebdb2f6710e7
+		summarizeBy: none
+		sourceColumn: IdPoblacion
+
+	column NombrePoblacion
+		dataType: string
+		isHidden
+		lineageTag: 524567e9-2be4-49ec-a614-83d6523a0b67
+		summarizeBy: none
+		sourceColumn: NombrePoblacion
+
+	column NombreAmigable
+		dataType: string
+		lineageTag: d51d1a4e-b83d-48a0-bac8-2cab08178639
+		summarizeBy: none
+		sourceColumn: NombreAmigable
+		sortByColumn: Orden
+
+	column GrupoPoblacional
+		dataType: string
+		lineageTag: 0893d336-7a0e-4d56-9f67-b8d767ba98ab
+		summarizeBy: none
+		sourceColumn: GrupoPoblacional
+
+	column EsVulnerable
+		dataType: double
+		formatString: 0
+		lineageTag: ec58150f-718c-4e96-9790-9edbca6302c3
+		summarizeBy: none
+		sourceColumn: EsVulnerable
+
+	column EsDesplazamientoViolencia
+		dataType: double
+		isHidden
+		formatString: 0
+		lineageTag: 34ef707b-a36c-4d12-bbd9-c77a72a4c077
+		summarizeBy: none
+		sourceColumn: EsDesplazamientoViolencia
+
+	column Orden
+		dataType: double
+		isHidden
+		formatString: 0
+		lineageTag: c729a191-f005-4c56-a8a0-58de3f9567c5
+		summarizeBy: none
+		sourceColumn: Orden
+
+	partition DimPoblacion = m
+		mode: import
+		source =
+				let
+				    EsquemaBase = type table [
+				        IdPoblacion = number, NombrePoblacion = text, NombreAmigable = text,
+				        GrupoPoblacional = text, EsVulnerable = number, EsDesplazamientoViolencia = number, Orden = number
+				    ],
+				    RutaBase = RutaCurados & "\dim_poblacion.csv",
+				    Base = try
+				        let
+				            t = Table.PromoteHeaders(Csv.Document(File.Contents(RutaBase), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv])),
+				            tipado = Table.TransformColumnTypes(t, {
+				                {"IdPoblacion", Int64.Type}, {"NombrePoblacion", type text}, {"NombreAmigable", type text},
+				                {"GrupoPoblacional", type text}, {"EsVulnerable", Int64.Type},
+				                {"EsDesplazamientoViolencia", Int64.Type}, {"Orden", Int64.Type}
+				            })
+				        in
+				            Table.SelectColumns(tipado, {"IdPoblacion", "NombrePoblacion", "NombreAmigable", "GrupoPoblacional", "EsVulnerable", "EsDesplazamientoViolencia", "Orden"})
+				        otherwise #table(EsquemaBase, {}),
+				    SinClasificar = #table(EsquemaBase, {{9999, "SIN_CLASIFICAR", "Sin clasificar", "Otras poblaciones", 0, 0, 9999}}),
+				    Final = Table.Combine({Base, SinClasificar}),
+				    Ordenado = Table.Sort(Final, {{"Orden", Order.Ascending}, {"NombrePoblacion", Order.Ascending}})
+				in
+				    Table.Buffer(Ordenado)
+
+	annotation PBI_ResultType = Table
+

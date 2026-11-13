@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "ASTIN Metas"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "93a9633d-fdfe-597d-a3ad-1e826d2f25ad"
+  }
+}

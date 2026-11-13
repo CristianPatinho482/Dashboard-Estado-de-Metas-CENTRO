@@ -1,0 +1,15 @@
+expression RutaMetas = "C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e informaci#(00F3)n - Estado de las metas centro ASTIN\01_Metas"
+	lineageTag: 80d4a5cb-69b3-42b3-898d-5729e5dc1c6e
+
+expression RutaPE04 = "C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e informaci#(00F3)n - Estado de las metas centro ASTIN\02_Reportes_PE04"
+	lineageTag: f5b0a2ed-2767-47b6-9128-369bceae1d02
+
+expression RutaPE14 = "C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e informaci#(00F3)n - Estado de las metas centro ASTIN\03_Reportes_PE14"
+	lineageTag: 46927ae3-d6b0-49fa-8ebb-f71bbb908864
+
+expression RutaCurados = "C:\Users\capatino\Documents\Sistema de control e informaci#(00F3)n - Estado de las metas centro ASTIN\data\curated"
+	lineageTag: 45c5f758-25bf-4c84-adf6-f530c8153eec
+
+expression AnioPorDefecto = 2026
+	lineageTag: ad8b1302-dd18-4a1e-9136-326a78284c9e
+

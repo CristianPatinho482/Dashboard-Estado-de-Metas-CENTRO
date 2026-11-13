@@ -1,0 +1,67 @@
+relationship ec56f37c-f027-5314-8722-14188d625461
+	fromColumn: FactMetas.IdPeriodo
+	toColumn: DimPeriodo.IdPeriodo
+
+relationship 2f657004-e24a-5aa0-aa82-e98566ade5ca
+	fromColumn: Fact_PE04_Fichas.ID_PERIODO
+	toColumn: DimPeriodo.IdPeriodo
+
+relationship e10134b4-0c10-586c-bd14-d7f95db72d1d
+	fromColumn: Fact_PE14_Aprendices.ID_PERIODO
+	toColumn: DimPeriodo.IdPeriodo
+
+relationship 6b9c7b6a-9112-5751-b514-a41a97bef2b3
+	fromColumn: _Control_Metas.IdPeriodo
+	toColumn: DimPeriodo.IdPeriodo
+
+relationship 64b47d4f-d6d7-5a5f-ae1f-56a2b790d259
+	fromColumn: Fact_PE04_Fichas.CODIGO_FICHA
+	toColumn: Dim_Ficha_Programa.CODIGO_FICHA
+
+relationship 9534531a-14ce-592a-aaac-473e9bd49d4c
+	fromColumn: Fact_PE14_Aprendices.CODIGO_FICHA
+	toColumn: Dim_Ficha_Programa.CODIGO_FICHA
+
+relationship 1ee96b5a-b222-5d96-b810-f9ca950c1b86
+	fromColumn: Fact_PE14_Aprendices.IdPoblacion
+	toColumn: DimPoblacion.IdPoblacion
+
+relationship 2e156c04-ec91-52c3-9ef7-ddc38a07ff77
+	fromColumn: FactMetas.IdCategoria
+	toColumn: DimCategoria.IdCategoria
+
+relationship 34eea3b8-86f9-53b5-9b9c-f63af9de243c
+	fromColumn: FactMetas.IdNivelFormacion
+	toColumn: DimNivelFormacion.IdNivelFormacion
+
+relationship 01f66114-a386-5cdd-aaa7-413481ac5db4
+	fromColumn: FactMetas.IdEstrategia
+	toColumn: DimEstrategia.IdEstrategia
+
+relationship ff503c48-1620-54b1-850a-e1fea43f8d85
+	fromColumn: FactMetas.IdCentro
+	toColumn: DimCentro.IdCentro
+
+relationship 359b2da5-3fd4-5a87-ac27-b93869c5c88a
+	fromColumn: Fact_PE04_Fichas.IdCentro
+	toColumn: DimCentro.IdCentro
+
+relationship 9ee562b7-aafc-53a4-94fe-8f5eb7d14e71
+	fromColumn: Fact_PE14_Aprendices.IdCentro
+	toColumn: DimCentro.IdCentro
+
+relationship 13367dc7-5e4b-492c-a527-a7e755a04d5c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimPeriodo.FechaInicio
+	toColumn: LocalDateTable_9312ce10-c781-494c-a50d-25a185c6de43.Date
+
+relationship 5f7cb689-c4e5-4982-8f31-f99d341d7967
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimPeriodo.FechaFin
+	toColumn: LocalDateTable_8ba1b73b-7938-4421-a514-ffe1ca26a9cc.Date
+
+relationship 8466b5f9-72b6-4e87-ac43-c39c0a5e9d00
+	joinOnDateBehavior: datePartOnly
+	fromColumn: _Auditoria_Ingesta.FechaModificacion
+	toColumn: LocalDateTable_8b88d491-0e3c-4e7c-971c-d0f8c7f37676.Date
+

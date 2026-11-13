@@ -1,0 +1,176 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "efa226c66a6d524c941e",
+  "position": {
+    "x": 20,
+    "y": 84,
+    "z": 300,
+    "height": 240,
+    "width": 1240,
+    "tabOrder": 300
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "drillFilterOtherVisuals": true,
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimPeriodo"
+                    }
+                  },
+                  "Property": "PeriodoTexto"
+                }
+              },
+              "queryRef": "DimPeriodo.PeriodoTexto",
+              "nativeQueryRef": "Periodo"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas_ASTIN"
+                    }
+                  },
+                  "Property": "Meta_Total"
+                }
+              },
+              "queryRef": "_Medidas_ASTIN.Meta_Total",
+              "nativeQueryRef": "Meta indicadores"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas_ASTIN"
+                    }
+                  },
+                  "Property": "Meta_Oficial_Total"
+                }
+              },
+              "queryRef": "_Medidas_ASTIN.Meta_Oficial_Total",
+              "nativeQueryRef": "Meta oficial"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas_ASTIN"
+                    }
+                  },
+                  "Property": "Diferencia_Meta_Oficial"
+                }
+              },
+              "queryRef": "_Medidas_ASTIN.Diferencia_Meta_Oficial",
+              "nativeQueryRef": "Dif. meta"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas_ASTIN"
+                    }
+                  },
+                  "Property": "Ejecucion_Total"
+                }
+              },
+              "queryRef": "_Medidas_ASTIN.Ejecucion_Total",
+              "nativeQueryRef": "Ejecución indicadores"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas_ASTIN"
+                    }
+                  },
+                  "Property": "Ejecucion_Oficial_Total"
+                }
+              },
+              "queryRef": "_Medidas_ASTIN.Ejecucion_Oficial_Total",
+              "nativeQueryRef": "Ejecución oficial"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas_ASTIN"
+                    }
+                  },
+                  "Property": "Diferencia_Ejecucion_Oficial"
+                }
+              },
+              "queryRef": "_Medidas_ASTIN.Diferencia_Ejecucion_Oficial",
+              "nativeQueryRef": "Dif. ejecución"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Conciliación metas vs control oficial'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'left'"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1A1A1A'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

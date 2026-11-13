@@ -1,0 +1,10 @@
+# Binarios de Power BI (se generan desde el PBIP)
+*.pbix
+*.pbit
+*.abf
+
+# Temporales y logs
+~$*
+data/qa/vigilante.log
+*.tmp
+tmp_*/

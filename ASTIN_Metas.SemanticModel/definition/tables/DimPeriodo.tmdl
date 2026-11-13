@@ -1,0 +1,127 @@
+table DimPeriodo
+	lineageTag: 176304ee-2295-44d4-992c-51b80d8c00b2
+
+	column IdPeriodo
+		dataType: double
+		formatString: 0
+		lineageTag: c98ceb2f-40ed-48d5-a201-5cc9c70bbd06
+		summarizeBy: none
+		sourceColumn: IdPeriodo
+
+	column Anio
+		dataType: double
+		formatString: 0
+		lineageTag: 216e7dea-0085-48c8-ada4-eb1caffaa06a
+		summarizeBy: sum
+		sourceColumn: Anio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes
+		dataType: double
+		formatString: 0
+		lineageTag: 8525f1f9-4668-48b1-82d6-2a3518e30cd4
+		summarizeBy: sum
+		sourceColumn: Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column NombreMes
+		dataType: string
+		lineageTag: b8c253fd-f357-4032-9655-c1a78f7dd32f
+		summarizeBy: none
+		sourceColumn: NombreMes
+		sortByColumn: Mes
+
+	column Trimestre
+		dataType: double
+		formatString: 0
+		lineageTag: 604edf81-72f9-4a7a-9da5-6e71ce7100c3
+		summarizeBy: sum
+		sourceColumn: Trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaInicio
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: fe06ee21-077e-4a21-8489-f53cf95ac5af
+		summarizeBy: none
+		sourceColumn: FechaInicio
+
+		variation Variation
+			isDefault
+			relationship: 13367dc7-5e4b-492c-a527-a7e755a04d5c
+			defaultHierarchy: LocalDateTable_9312ce10-c781-494c-a50d-25a185c6de43.'Jerarquía de fechas'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column FechaFin
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 2de4b8d1-769d-4d53-a8e5-ad2a6bef9b20
+		summarizeBy: none
+		sourceColumn: FechaFin
+
+		variation Variation
+			isDefault
+			relationship: 5f7cb689-c4e5-4982-8f31-f99d341d7967
+			defaultHierarchy: LocalDateTable_8ba1b73b-7938-4421-a514-ffe1ca26a9cc.'Jerarquía de fechas'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column PeriodoTexto
+		dataType: string
+		lineageTag: 57c8a953-3fc2-4998-bcff-76356cc84688
+		summarizeBy: none
+		sourceColumn: PeriodoTexto
+		sortByColumn: IdPeriodo
+
+	column OrdenAnual
+		dataType: double
+		isHidden
+		formatString: 0
+		lineageTag: 6dedd7d5-f93f-4aa2-9e16-812f20131f03
+		summarizeBy: sum
+		sourceColumn: OrdenAnual
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimPeriodo = m
+		mode: import
+		source =
+				let
+				    AnioSeguro = if AnioPorDefecto = null then 2026 else AnioPorDefecto,
+				    AniosHechos = List.Select(List.Combine({
+				        List.Transform(FactMetas[IdPeriodo], each Number.IntegerDivide(_, 100)),
+				        List.Transform(Fact_PE04_Fichas[ID_PERIODO], each Number.IntegerDivide(_, 100)),
+				        List.Transform(Fact_PE14_Aprendices[ID_PERIODO], each Number.IntegerDivide(_, 100))
+				    }), each _ <> null and _ >= 2000 and _ <= 2100),
+				    Anios = List.Distinct(List.Sort(List.Combine({{AnioSeguro}, AniosHechos}))),
+				    Meses = {1..12},
+				    Nombres = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"},
+				    Filas = List.Combine(List.Transform(Anios, (anio) =>
+				        List.Transform(Meses, (mes) =>
+				            let
+				                inicio = #date(anio, mes, 1),
+				                fin = Date.EndOfMonth(inicio)
+				            in
+				                {
+				                    anio * 100 + mes,
+				                    anio,
+				                    mes,
+				                    Nombres{mes - 1},
+				                    Number.RoundUp(mes / 3),
+				                    inicio,
+				                    fin,
+				                    Nombres{mes - 1} & " " & Text.From(anio),
+				                    mes
+				                }))),
+				    Esquema = type table [
+				        IdPeriodo = number, Anio = number, Mes = number, NombreMes = text, Trimestre = number,
+				        FechaInicio = date, FechaFin = date, PeriodoTexto = text, OrdenAnual = number
+				    ],
+				    Tabla = Table.SelectRows(#table(Esquema, Filas), each [IdPeriodo] <> null)
+				in
+				    Table.Buffer(Tabla)
+

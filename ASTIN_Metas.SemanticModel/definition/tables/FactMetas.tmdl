@@ -1,0 +1,116 @@
+table FactMetas
+	lineageTag: 75233616-b25a-4a78-a8e2-c17b91167fdb
+
+	column IdPeriodo
+		dataType: int64
+		formatString: 0
+		lineageTag: 1257d4d0-5ee2-48ff-ad69-24e9cb6ca523
+		summarizeBy: none
+		sourceColumn: IdPeriodo
+
+	column IdCentro
+		dataType: int64
+		formatString: 0
+		lineageTag: e4e18310-bf97-4ea5-a710-2719763f141b
+		summarizeBy: none
+		sourceColumn: IdCentro
+
+	column IdCategoria
+		dataType: int64
+		formatString: 0
+		lineageTag: 108d36d2-7abe-4eb9-8c96-92d637eccfec
+		summarizeBy: none
+		sourceColumn: IdCategoria
+
+	column IdNivelFormacion
+		dataType: int64
+		formatString: 0
+		lineageTag: 039a840d-8bb7-433b-ba72-f3b6d74fb050
+		summarizeBy: none
+		sourceColumn: IdNivelFormacion
+
+	column IdEstrategia
+		dataType: int64
+		formatString: 0
+		lineageTag: 340fef71-8b0f-4f48-83db-aff0d2a2e3ce
+		summarizeBy: none
+		sourceColumn: IdEstrategia
+
+	column Indicador
+		dataType: string
+		lineageTag: fe918b69-85be-473b-9db3-5b47152071e7
+		summarizeBy: none
+		sourceColumn: Indicador
+
+	column Indicador_Normalizado
+		dataType: string
+		isHidden
+		lineageTag: fa8c34bd-d0c2-494f-84be-90e3e7b27105
+		summarizeBy: none
+		sourceColumn: Indicador_Normalizado
+
+	column Meta
+		dataType: int64
+		formatString: #,##0
+		lineageTag: dfb0fd60-0b8b-491c-9113-fb0f74382304
+		summarizeBy: sum
+		sourceColumn: Meta
+
+	column Ejecucion
+		dataType: int64
+		formatString: #,##0
+		lineageTag: c62f2a6c-15ea-4f4a-a804-71f778a4610b
+		summarizeBy: sum
+		sourceColumn: Ejecucion
+
+	column OrigenArchivo
+		dataType: string
+		isHidden
+		lineageTag: bd2b6538-dedb-414b-a731-772e334ad5ac
+		summarizeBy: none
+		sourceColumn: OrigenArchivo
+
+	column Hoja
+		dataType: string
+		isHidden
+		lineageTag: 8b1ff47b-df8b-4792-95e1-ea6fae399085
+		summarizeBy: none
+		sourceColumn: Hoja
+
+	column DiaCorte
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 55bc6365-90e2-48cb-b386-e73a05617235
+		summarizeBy: none
+		sourceColumn: DiaCorte
+
+	partition FactMetas = m
+		mode: import
+		source =
+				let
+				    Ruta = RutaCurados & "\metas",
+				    Archivos = try Folder.Files(Ruta) otherwise #table({"Content", "Name", "Extension"}, {}),
+				    Csvs = Table.SelectRows(Archivos, each Text.Lower([Extension]) = ".csv"),
+				    Columnas = {"IdPeriodo", "IdCentro", "IdCategoria", "IdNivelFormacion", "IdEstrategia", "Indicador", "Indicador_Normalizado", "Meta", "Ejecucion", "OrigenArchivo", "Hoja", "DiaCorte"},
+				    Esquema = type table [
+				        IdPeriodo = number, IdCentro = number, IdCategoria = number, IdNivelFormacion = number,
+				        IdEstrategia = number, Indicador = text, Indicador_Normalizado = text, Meta = number,
+				        Ejecucion = number, OrigenArchivo = text, Hoja = text, DiaCorte = number
+				    ],
+				    Tablas = List.Transform(Table.ToRecords(Csvs), each
+				        let
+				            t = Table.PromoteHeaders(Csv.Document([Content], [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv])),
+				            tipado = Table.TransformColumnTypes(t, {
+				                {"IdPeriodo", Int64.Type}, {"IdCentro", Int64.Type}, {"IdCategoria", Int64.Type},
+				                {"IdNivelFormacion", Int64.Type}, {"IdEstrategia", Int64.Type},
+				                {"Meta", Int64.Type}, {"Ejecucion", Int64.Type}, {"DiaCorte", Int64.Type}
+				            })
+				        in
+				            Table.SelectColumns(tipado, Columnas)),
+				    Final = if List.IsEmpty(Tablas) then #table(Esquema, {}) else Table.Combine(Tablas)
+				in
+				    Table.Buffer(Final)
+
+	annotation PBI_ResultType = Exception
+

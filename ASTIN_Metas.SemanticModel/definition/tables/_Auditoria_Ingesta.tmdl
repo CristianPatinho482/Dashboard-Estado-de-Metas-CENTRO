@@ -1,0 +1,476 @@
+table _Auditoria_Ingesta
+	lineageTag: 19929e85-60c5-494e-9207-211e29e3acc4
+
+	column Origen
+		dataType: string
+		lineageTag: 19b2d8da-a83e-4a4c-93fa-17c1ab9837d4
+		summarizeBy: none
+		sourceColumn: Origen
+
+	column Archivo
+		dataType: string
+		lineageTag: a331a4b4-8d2d-470c-ac60-6816da70e51e
+		summarizeBy: none
+		sourceColumn: Archivo
+
+	column Extension
+		dataType: string
+		lineageTag: 591978d6-e866-490f-bb58-848c9c666e5f
+		summarizeBy: none
+		sourceColumn: Extension
+
+	column IdPeriodo
+		dataType: int64
+		formatString: 0
+		lineageTag: ab8f81f7-67a2-4ba7-8e4f-7a1c41b67692
+		summarizeBy: sum
+		sourceColumn: IdPeriodo
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaModificacion
+		dataType: dateTime
+		formatString: dd/MM/yyyy HH:mm
+		lineageTag: c0f1ffe1-5d74-41ce-af21-95bf22fb730c
+		summarizeBy: none
+		sourceColumn: FechaModificacion
+
+		variation Variation
+			isDefault
+			relationship: 8466b5f9-72b6-4e87-ac43-c39c0a5e9d00
+			defaultHierarchy: LocalDateTable_8b88d491-0e3c-4e7c-971c-d0f8c7f37676.'Jerarquía de fechas'
+
+	column TamanoKB
+		dataType: double
+		formatString: #,##0.0
+		lineageTag: 00d351a0-2a5a-407c-bcf9-cc11e23ae777
+		summarizeBy: sum
+		sourceColumn: TamanoKB
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Auditoria_Ingesta = m
+		mode: import
+		source =
+				let
+				    Reemplazos = {
+				        {"#(00C1)", "A"}, {"#(00C0)", "A"}, {"#(00C4)", "A"}, {"#(00C2)", "A"}, {"#(00C3)", "A"},
+				        {"#(00C9)", "E"}, {"#(00C8)", "E"}, {"#(00CB)", "E"}, {"#(00CA)", "E"},
+				        {"#(00CD)", "I"}, {"#(00CC)", "I"}, {"#(00CF)", "I"}, {"#(00CE)", "I"},
+				        {"#(00D3)", "O"}, {"#(00D2)", "O"}, {"#(00D6)", "O"}, {"#(00D4)", "O"}, {"#(00D5)", "O"},
+				        {"#(00DA)", "U"}, {"#(00D9)", "U"}, {"#(00DC)", "U"}, {"#(00DB)", "U"},
+				        {"#(00D1)", "N"}, {"#(00C7)", "C"},
+				        {"\n", " "}, {"\r", " "}, {"\t", " "}
+				    },
+				    SinAcentos = (txt as nullable text) as text =>
+				        let
+				            s = if txt = null then "" else Text.From(txt),
+				            r = List.Accumulate(Reemplazos, s, (estado, par) => Text.Replace(estado, par{0}, par{1}))
+				        in
+				            r,
+				    Limpiar = (txt as any) as text =>
+				        let
+				            s = if txt = null then "" else Text.From(txt),
+				            r = Text.Trim(Text.Combine(List.Select(Text.Split(Text.Replace(Text.Replace(s, "#(lf)", " "), "#(cr)", " "), " "), each _ <> ""), " "))
+				        in
+				            r,
+				    Norm = (txt as any) as text =>
+				        let
+				            s = Text.Upper(SinAcentos(if txt = null then "" else Text.From(txt))),
+				            chars = Text.ToList(s),
+				            mapped = List.Transform(chars, each if List.Contains({"A".."Z"}, _) or List.Contains({"0".."9"}, _) then _ else "_"),
+				            partes = List.Select(Text.Split(Text.Combine(mapped), "_"), each _ <> "")
+				        in
+				            Text.Combine(partes, "_"),
+				    Numero = (valor as any) as nullable number =>
+				        let
+				            v = valor,
+				            n =
+				                if v = null or v = "" then null
+				                else if Value.Is(v, type number) then v
+				                else if Value.Is(v, type duration) then Duration.TotalHours(v)
+				                else if Value.Is(v, type time) then Duration.TotalHours(Duration.From(v))
+				                else if Value.Is(v, type datetime) then Duration.TotalHours(v - #datetime(1899, 12, 31, 0, 0, 0))
+				                else
+				                    let
+				                        s = Text.Trim(Text.From(v)),
+				                        sinPorc = Text.Replace(s, "%", ""),
+				                        posComa = Text.PositionOf(sinPorc, ",", Occurrence.Last),
+				                        posPunto = Text.PositionOf(sinPorc, ".", Occurrence.Last),
+				                        normalizado =
+				                            if posComa >= 0 and posPunto >= 0 then
+				                                if posComa > posPunto then
+				                                    Text.Replace(Text.Replace(sinPorc, ".", ""), ",", ".")
+				                                else
+				                                    Text.Replace(sinPorc, ",", "")
+				                            else if posComa >= 0 then
+				                                Text.Replace(sinPorc, ",", ".")
+				                            else
+				                                sinPorc,
+				                        limpio = Text.Select(normalizado, {"0".."9", ".", "-"})
+				                    in
+				                        try Number.From(limpio) otherwise null
+				        in
+				            n,
+				    Horas = (valor as any) as number =>
+				        let
+				            h =
+				                if valor = null then 0
+				                else if Value.Is(valor, type duration) then Duration.TotalHours(valor)
+				                else if Value.Is(valor, type time) then Duration.TotalHours(Duration.From(valor))
+				                else if Value.Is(valor, type datetime) then Duration.TotalHours(valor - #datetime(1899, 12, 31, 0, 0, 0))
+				                else if Value.Is(valor, type number) then valor * 24
+				                else
+				                    let
+				                        s = Text.Trim(Text.From(valor)),
+				                        dias = if Text.Contains(s, "day") then try Number.From(Text.BeforeDelimiter(s, " day")) otherwise 0 else 0,
+				                        reloj = if Text.Contains(s, ":") then Text.AfterDelimiter(s, " ") else "",
+				                        partes = if reloj = "" then {} else Text.Split(reloj, ":"),
+				                        hh = if List.Count(partes) >= 2 then try Number.From(partes{0}) otherwise 0 else 0,
+				                        mm = if List.Count(partes) >= 2 then try Number.From(partes{1}) otherwise 0 else 0,
+				                        ss = if List.Count(partes) >= 3 then try Number.From(partes{2}) otherwise 0 else 0
+				                    in
+				                        dias * 24 + hh + mm / 60 + ss / 3600
+				        in
+				            h,
+				    PeriodoDesdeNombre = (nombre as nullable text, anioDefecto as number) as nullable number =>
+				        let
+				            s = Text.Upper(SinAcentos(if nombre = null then "" else Text.From(nombre))),
+				            meses = {
+				                {"ENERO", 1}, {"FEBRERO", 2}, {"MARZO", 3}, {"ABRIL", 4},
+				                {"MAYO", 5}, {"JUNIO", 6}, {"JULIO", 7}, {"AGOSTO", 8},
+				                {"SEPTIEMBRE", 9}, {"OCTUBRE", 10}, {"NOVIEMBRE", 11}, {"DICIEMBRE", 12},
+				                {"ENE", 1}, {"FEB", 2}, {"MAR", 3}, {"ABR", 4}, {"MAY", 5}, {"JUN", 6},
+				                {"JUL", 7}, {"AGO", 8}, {"SEP", 9}, {"SET", 9}, {"OCT", 10}, {"NOV", 11}, {"DIC", 12}
+				            },
+				            mes = List.First(List.Select(meses, each Text.Contains(s, _{0})), null),
+				            posAnio = List.First(List.Select({
+				                Text.PositionOf(s, "2025"), Text.PositionOf(s, "2026"), Text.PositionOf(s, "2027"),
+				                Text.PositionOf(s, "2028"), Text.PositionOf(s, "2029"), Text.PositionOf(s, "2030")
+				            }, each _ >= 0), -1),
+				            anio = if posAnio >= 0 then try Number.From(Text.Middle(s, posAnio, 4)) otherwise anioDefecto else anioDefecto,
+				            p = if mes = null then null else anio * 100 + mes{1}
+				        in
+				            p,
+				    PeriodoDesdeValor = (valor as any, anioDefecto as number) as nullable number =>
+				        let
+				            s = if valor = null then "" else Text.Trim(Text.From(valor)),
+				            n = try Number.From(s) otherwise null,
+				            p = if n <> null and n >= 200001 and n <= 209912 then n else PeriodoDesdeNombre(s, anioDefecto)
+				        in
+				            p,
+				    DiaHoja = (nombre as nullable text) as number =>
+				        let
+				            s = if nombre = null then "" else Text.From(nombre),
+				            digitos = Text.Select(s, {"0".."9"}),
+				            d = try Number.From(digitos) otherwise 0
+				        in
+				            if d >= 1 and d <= 31 then d else 0,
+				    Celda = (fila as list, i as number) as any => try fila{i} otherwise null,
+				    EsAgregado = (etiqueta as text) as logical =>
+				        let
+				            n = Norm(etiqueta),
+				            l = etiqueta
+				        in
+				            n = ""
+				            or Text.StartsWith(n, "TOTAL")
+				            or Text.Contains(l, " = (")
+				            or Text.Contains(l, ") = (")
+				            or Text.StartsWith(n, "FORMACION_TECNOLOGICA")
+				            or Text.StartsWith(n, "FORMACION_TITULADA")
+				            or Text.StartsWith(n, "FORMACION_OCUPACIONAL")
+				            or Text.StartsWith(n, "FORMACION_PROFESIONAL")
+				            or Text.StartsWith(n, "FORMACION_COMPLEMENTARIA_ESTRATEGIA")
+				            or Text.StartsWith(n, "FORMACION_ESPECIAL_CAMPESINA")
+				            or Text.StartsWith(n, "EDUCACION_SUPERIOR")
+				            or Text.StartsWith(n, "CERTIFICACION")
+				            or Text.StartsWith(n, "RETENCION")
+				            or Text.StartsWith(n, "APRENDICES_DE_PRIMER_CURSO")
+				            or Text.StartsWith(n, "METAS_PROGRAMAS")
+				            or n = "FORMACION_COMPLEMENTARIA"
+				            or n = "PROGRAMA_DE_BILINGUISMO",
+				    Nivel = (etiqueta as text) as nullable number =>
+				        let
+				            n = Norm(etiqueta)
+				        in
+				            if Text.Contains(n, "TECNOLOG") then 1
+				            else if Text.Contains(n, "TECNICO") then 2
+				            else if Text.Contains(n, "OPERARIO") then 3
+				            else if Text.Contains(n, "AUXILIAR") then 4
+				            else if Text.Contains(n, "BILINGU") and not Text.Contains(n, "SIN_BILINGUISMO") then 6
+				            else if Text.Contains(n, "PLACA_HUELLA") or Text.Contains(n, "OTROS_PROGRAMAS_FEC") then 7
+				            else if Text.Contains(n, "COMPLEMENTARIA") or Text.Contains(n, "FORMACION_ESPECIAL_POPULAR") or Text.StartsWith(n, "FEP") then 5
+				            else null,
+				    Estrategia = (etiqueta as text) as number =>
+				        let
+				            n = Norm(etiqueta)
+				        in
+				            if Text.Contains(n, "ARTICULACION") then 8
+				            else if Text.Contains(n, "CAMPESENA") then 5
+				            else if Text.Contains(n, "FULL_POPULAR") or Text.StartsWith(n, "FEP") or Text.Contains(n, "FORMACION_ESPECIAL_POPULAR") then 6
+				            else if Text.Contains(n, "FIC") then 7
+				            else if Text.Contains(n, "A_DISTANCIA") and not Text.Contains(n, "PRESENCIAL") then 4
+				            else if Text.Contains(n, "VIRTUAL") then 3
+				            else if Text.Contains(n, "PRESENCIAL") then 2
+				            else 1,
+				    Poblacion = (encabezado as any) as nullable text =>
+				        let
+				            n = Norm(encabezado),
+				            sufijo = "_TOTAL_APRENDICES",
+				            base = if Text.EndsWith(n, sufijo) and n <> "GRAN_TOTAL_APRENDICES" then Text.Start(n, Text.Length(n) - Text.Length(sufijo)) else null,
+				            limpio = if base = null then null else Text.TrimEnd(Text.Replace(base, "__", "_"), "_")
+				        in
+				            if limpio = "" then null else limpio,
+				    EsEncabezadoMetas = (fila as list) as logical =>
+				        let
+				            c1 = Norm(Celda(fila, 0)),
+				            c2 = Norm(Celda(fila, 1)),
+				            c3 = Norm(Celda(fila, 2))
+				        in
+				            (c1 = "INDICADOR" and Text.StartsWith(c2, "META") and Text.StartsWith(c3, "EJECUCION"))
+				            or (Text.StartsWith(c1, "METAS_FORMACION_PROFESIONAL") and c2 = "META" and Text.StartsWith(c3, "EJECUCION")),
+				    EsEncabezadoPE = (fila as list) as logical =>
+				        let
+				            valores = List.Transform(fila, each Norm(_))
+				        in
+				            List.Contains(valores, "IDENTIFICADOR_FICHA") and List.Contains(valores, "CODIGO_REGIONAL"),
+				    EsEncabezadoPE14 = (fila as list) as logical =>
+				        let
+				            valores = List.Transform(fila, each Norm(_))
+				        in
+				            List.Contains(valores, "IDENTIFICADOR_FICHA") and List.Contains(valores, "GRAN_TOTAL_APRENDICES"),
+				    HojaPrincipal = (binario as binary) as record =>
+				        let
+				            wb = Excel.Workbook(binario, null, false),
+				            hojas = Table.SelectRows(wb, each [Kind] = "Sheet"),
+				            conDia = Table.AddColumn(hojas, "Dia", each DiaHoja([Name])),
+				            ordenadas = Table.Sort(conDia, {{"Dia", Order.Descending}, {"Name", Order.Ascending}}),
+				            primera = Table.First(ordenadas)
+				        in
+				            [Data = primera[Data], Nombre = primera[Name], Dia = primera[Dia]],
+				    ListarArchivos = (ruta as text) as table =>
+				        let
+				            todos = Folder.Files(ruta),
+				            validos = Table.SelectRows(todos, each
+				                not Text.StartsWith([Name], "~$")
+				                and List.Contains({".xlsx", ".xlsm", ".xls", ".csv", ".xml"}, Text.Lower([Extension]))
+				                and not Text.Contains([Name], "_curated_")),
+				            conPeriodo = Table.AddColumn(validos, "IdPeriodo", each PeriodoDesdeNombre([Name], AnioPorDefecto), type nullable number)
+				        in
+				            conPeriodo,
+				    ParseMetas = (hoja as table, archivo as text, periodo as number, dia as number) as table =>
+				        let
+				            Filas = Table.ToRows(hoja),
+				            idx = List.PositionOf(List.Transform(Filas, each if EsEncabezadoMetas(_) then 1 else 0), 1),
+				            Resto = if idx < 0 then {} else List.Skip(Filas, idx + 1),
+				            fin = if Resto = {} then -1 else List.PositionOf(List.Transform(Resto, each
+				                if Text.StartsWith(Norm(Celda(_, 0)), "RETENCION") or Text.StartsWith(Norm(Celda(_, 0)), "METAS_PROGRAMAS_RELEVANTES") then 1 else 0), 1),
+				            Bloque = if fin < 0 then Resto else List.FirstN(Resto, fin),
+				            Candidatos = List.Select(Bloque, each
+				                let
+				                    l = Limpiar(Celda(_, 0)),
+				                    m = Numero(Celda(_, 1)),
+				                    e = Numero(Celda(_, 2)),
+				                    n2 = Norm(Celda(_, 1)),
+				                    n3 = Norm(Celda(_, 2)),
+				                    niv = Nivel(l)
+				                in
+				                    l <> ""
+				                    and (m <> null or e <> null)
+				                    and not (Text.StartsWith(n2, "META") and Text.StartsWith(n3, "EJECUCION"))
+				                    and not EsAgregado(l)
+				                    and niv <> null),
+				            Registros = List.Transform(Candidatos, each
+				                let
+				                    l = Limpiar(Celda(_, 0)),
+				                    m = Numero(Celda(_, 1)),
+				                    e = Numero(Celda(_, 2)),
+				                    niv = Nivel(l),
+				                    est = Estrategia(l)
+				                in
+				                    [
+				                        IdPeriodo = periodo,
+				                        IdCentro = 9230,
+				                        IdCategoria = if niv <= 4 then 1 else 2,
+				                        IdNivelFormacion = niv,
+				                        IdEstrategia = est,
+				                        Indicador = l,
+				                        Indicador_Normalizado = Norm(l),
+				                        Meta = if m = null then 0 else Number.Round(m, 0),
+				                        Ejecucion = if e = null then 0 else Number.Round(e, 0),
+				                        OrigenArchivo = archivo,
+				                        Hoja = "",
+				                        DiaCorte = dia
+				                    ]),
+				            Esquema = type table [
+				                IdPeriodo = number, IdCentro = number, IdCategoria = number,
+				                IdNivelFormacion = number, IdEstrategia = number,
+				                Indicador = text, Indicador_Normalizado = text,
+				                Meta = number, Ejecucion = number,
+				                OrigenArchivo = text, Hoja = text, DiaCorte = number
+				            ]
+				        in
+				            if List.IsEmpty(Registros) then #table(Esquema, {}) else Table.FromRecords(Registros),
+				    ParseControl = (hoja as table, archivo as text, periodo as number, dia as number) as table =>
+				        let
+				            Filas = Table.ToRows(hoja),
+				            idx = List.PositionOf(List.Transform(Filas, each if EsEncabezadoMetas(_) then 1 else 0), 1),
+				            EsModerno = idx >= 0 and Norm(Celda(Filas{idx}, 0)) = "INDICADOR",
+				            MetaTop = List.First(List.Select(List.FirstN(Filas, 10), each Norm(Celda(_, 0)) = "META"), null),
+				            EjecTop = List.First(List.Select(List.FirstN(Filas, 10), each Norm(Celda(_, 0)) = "EJECUCION" and not Text.StartsWith(Limpiar(Celda(_, 0)), "%")), null),
+				            TotalFila = List.First(List.Select(Filas, each Text.StartsWith(Norm(Celda(_, 0)), "TOTAL_FORMACION_PROFESIONAL_INTEGRAL")), null),
+				            metaOficial = if EsModerno and MetaTop <> null then Numero(Celda(MetaTop, 1)) else if TotalFila <> null then Numero(Celda(TotalFila, 1)) else null,
+				            ejecOficial = if EsModerno and EjecTop <> null then Numero(Celda(EjecTop, 1)) else if TotalFila <> null then Numero(Celda(TotalFila, 2)) else null,
+				            fuente = if EsModerno and MetaTop <> null then "Resumen superior del archivo" else if TotalFila <> null then "Fila TOTAL FORMACI#(00D3)N PROFESIONAL INTEGRAL" else "",
+				            Registros = if metaOficial = null and ejecOficial = null then {} else {[
+				                IdPeriodo = periodo,
+				                Meta_Oficial = metaOficial,
+				                Ejecucion_Oficial = ejecOficial,
+				                Fuente = fuente,
+				                OrigenArchivo = archivo,
+				                Hoja = "",
+				                DiaCorte = dia
+				            ]},
+				            Esquema = type table [
+				                IdPeriodo = number, Meta_Oficial = nullable number, Ejecucion_Oficial = nullable number,
+				                Fuente = text, OrigenArchivo = text, Hoja = text, DiaCorte = number
+				            ]
+				        in
+				            if List.IsEmpty(Registros) then #table(Esquema, {}) else Table.FromRecords(Registros),
+				    ParsePE04 = (hoja as table, archivo as text, periodoArchivo as number) as table =>
+				        let
+				            Filas = Table.ToRows(hoja),
+				            idx = List.PositionOf(List.Transform(Filas, each if EsEncabezadoPE(_) then 1 else 0), 1),
+				            Enc = if idx < 0 then {} else List.Transform(Filas{idx}, each Limpiar(_)),
+				            Pos = (nombre as text) as number => List.PositionOf(List.Transform(Enc, each Norm(_)), nombre),
+				            iFicha = Pos("IDENTIFICADOR_FICHA"),
+				            iCentro = Pos("CODIGO_CENTRO"),
+				            iPrograma = Pos("NOMBRE_PROGRAMA_FORMACION"),
+				            iJornada = Pos("CODIGO_JORNADA"),
+				            iNombreJornada = Pos("NOMBRE_JORNADA"),
+				            iModalidad = Pos("MODALIDAD_FORMACION"),
+				            iEstado = Pos("ESTADO_CURSO"),
+				            iNivel = Pos("NIVEL_FORMACION"),
+				            iMat = Pos("TOTAL_APRENDICES"),
+				            iAct = Pos("TOTAL_APRENDICES_ACTIVOS"),
+				            iHoras = Pos("TOTAL_HORAS"),
+				            pContenido = if Filas = {} then null else PeriodoDesdeValor(Celda(Filas{2}, 0), AnioPorDefecto),
+				            periodo = if pContenido <> null then pContenido else periodoArchivo,
+				            Datos = if idx < 0 then {} else List.Skip(Filas, idx + 1),
+				            Registros = List.Transform(
+				                List.Select(Datos, each Numero(Celda(_, iFicha)) <> null),
+				                each
+				                    let
+				                        ficha = Numero(Celda(_, iFicha)),
+				                        mat = Numero(Celda(_, iMat)),
+				                        act = Numero(Celda(_, iAct)),
+				                        matN = if mat = null then 0 else Number.Round(mat, 0),
+				                        actN = if act = null then matN else Number.Round(act, 0),
+				                        canN = List.Max({matN - actN, 0})
+				                    in
+				                        [
+				                            ID_REGISTRO_UUID = Text.From(periodo) & "-" & Text.From(ficha),
+				                            ID_PERIODO = periodo,
+				                            CODIGO_FICHA = ficha,
+				                            NOMBRE_PROGRAMA = Limpiar(Celda(_, iPrograma)),
+				                            CODIGO_JORNADA = if Numero(Celda(_, iJornada)) = null then 0 else Numero(Celda(_, iJornada)),
+				                            NOMBRE_JORNADA = Limpiar(Celda(_, iNombreJornada)),
+				                            MODALIDAD_FORMACION = Limpiar(Celda(_, iModalidad)),
+				                            ESTADO_CURSO = Limpiar(Celda(_, iEstado)),
+				                            NIVEL_FORMACION = Limpiar(Celda(_, iNivel)),
+				                            APRENDICES_MATRICULADOS = matN,
+				                            APRENDICES_ACTIVOS = actN,
+				                            APRENDICES_CANCELADOS = canN,
+				                            TOTAL_HORAS = Horas(Celda(_, iHoras)),
+				                            IdCentro = if Numero(Celda(_, iCentro)) = null then 9230 else Numero(Celda(_, iCentro)),
+				                            ORIGEN_ARCHIVO = archivo
+				                        ]),
+				            Esquema = type table [
+				                ID_REGISTRO_UUID = text, ID_PERIODO = number, CODIGO_FICHA = number,
+				                NOMBRE_PROGRAMA = text, CODIGO_JORNADA = number, NOMBRE_JORNADA = text,
+				                MODALIDAD_FORMACION = text, ESTADO_CURSO = text, NIVEL_FORMACION = text,
+				                APRENDICES_MATRICULADOS = number, APRENDICES_ACTIVOS = number,
+				                APRENDICES_CANCELADOS = number, TOTAL_HORAS = number,
+				                IdCentro = number, ORIGEN_ARCHIVO = text
+				            ]
+				        in
+				            if List.IsEmpty(Registros) then #table(Esquema, {}) else Table.FromRecords(Registros),
+				    ParsePE14 = (hoja as table, archivo as text, periodoArchivo as number) as table =>
+				        let
+				            Filas = Table.ToRows(hoja),
+				            idx = List.PositionOf(List.Transform(Filas, each if EsEncabezadoPE14(_) then 1 else 0), 1),
+				            Enc = if idx < 0 then {} else List.Transform(Filas{idx}, each Limpiar(_)),
+				            Pos = (nombre as text) as number => List.PositionOf(List.Transform(Enc, each Norm(_)), nombre),
+				            iFicha = Pos("IDENTIFICADOR_FICHA"),
+				            iCentro = Pos("CODIGO_CENTRO"),
+				            iPrograma = Pos("NOMBRE_PROGRAMA_FORMACION"),
+				            iNivel = Pos("NIVEL_FORMACION"),
+				            iJornada = Pos("NOMBRE_JORNADA"),
+				            pContenido = if Filas = {} then null else PeriodoDesdeValor(Celda(Filas{2}, 0), AnioPorDefecto),
+				            periodo = if pContenido <> null then pContenido else periodoArchivo,
+				            Pobs = if idx < 0 then {} else List.Select(
+				                List.Transform({0..List.Count(Enc) - 1}, each [i = _, nombre = Poblacion(Enc{_})]),
+				                each _[nombre] <> null),
+				            Datos = if idx < 0 then {} else List.Skip(Filas, idx + 1),
+				            Registros = List.Combine(List.Transform(
+				                List.Select(Datos, each Numero(Celda(_, iFicha)) <> null),
+				                each
+				                    let
+				                        ficha = Numero(Celda(_, iFicha)),
+				                        centro = if Numero(Celda(_, iCentro)) = null then 9230 else Numero(Celda(_, iCentro)),
+				                        programa = Limpiar(Celda(_, iPrograma)),
+				                        nivel = Limpiar(Celda(_, iNivel)),
+				                        jornada = Limpiar(Celda(_, iJornada)),
+				                        Matriz = List.Transform(Pobs, (pob) =>
+				                            let
+				                                cant = Numero(Celda(_, pob[i]))
+				                            in
+				                                [
+				                                    ID_REGISTRO_UUID = Text.From(periodo) & "-" & Text.From(ficha) & "-" & pob[nombre],
+				                                    ID_PERIODO = periodo,
+				                                    IdCentro = centro,
+				                                    CODIGO_FICHA = ficha,
+				                                    NombrePoblacion = pob[nombre],
+				                                    Cantidad_Aprendices = if cant = null then 0 else Number.Round(cant, 0),
+				                                    NOMBRE_PROGRAMA = programa,
+				                                    NIVEL_FORMACION = nivel,
+				                                    NOMBRE_JORNADA = jornada,
+				                                    ORIGEN_ARCHIVO = archivo
+				                                ])
+				                    in
+				                        Matriz)),
+				            Esquema = type table [
+				                ID_REGISTRO_UUID = text, ID_PERIODO = number, IdCentro = number,
+				                CODIGO_FICHA = number, NombrePoblacion = text, Cantidad_Aprendices = number,
+				                NOMBRE_PROGRAMA = text, NIVEL_FORMACION = text, NOMBRE_JORNADA = text,
+				                ORIGEN_ARCHIVO = text
+				            ]
+				        in
+				            if List.IsEmpty(Registros) then #table(Esquema, {}) else Table.FromRecords(Registros),
+				    CabecerasPE14 = (hoja as table) as list =>
+				        let
+				            Filas = Table.ToRows(hoja),
+				            idx = List.PositionOf(List.Transform(Filas, each if EsEncabezadoPE14(_) then 1 else 0), 1),
+				            Enc = if idx < 0 then {} else Filas{idx},
+				            Pobs = List.Select(List.Transform(Enc, each Poblacion(_)), each _ <> null)
+				        in
+				            Pobs,
+				    Listar = (ruta as text, origen as text) as table =>
+				        let
+				            t = try Folder.Files(ruta) otherwise #table({"Content", "Name", "Extension", "Date modified", "Folder Path"}, {}),
+				            f = Table.SelectRows(t, each not Text.StartsWith([Name], "~$") and List.Contains({".xlsx", ".xlsm", ".xls", ".csv", ".xml"}, Text.Lower([Extension]))),
+				            a = Table.AddColumn(f, "Origen", each origen, type text),
+				            b = Table.AddColumn(a, "IdPeriodo", each PeriodoDesdeNombre([Name], AnioPorDefecto), Int64.Type),
+				            c = Table.AddColumn(b, "TamanoKB", each Number.Round(Binary.Length([Content]) / 1024, 1), type number),
+				            d = Table.SelectColumns(c, {"Origen", "Name", "Extension", "IdPeriodo", "Date modified", "TamanoKB"})
+				        in
+				            d,
+				    Metas = Listar(RutaMetas, "01_Metas"),
+				    PE04 = Listar(RutaPE04, "02_Reportes_PE04"),
+				    PE14 = Listar(RutaPE14, "03_Reportes_PE14"),
+				    Todos = Table.Combine({Metas, PE04, PE14}),
+				    Renombrado = Table.RenameColumns(Todos, {{"Name", "Archivo"}, {"Date modified", "FechaModificacion"}}),
+				    Ordenado = Table.Sort(Renombrado, {{"Origen", Order.Ascending}, {"IdPeriodo", Order.Descending}, {"Archivo", Order.Ascending}})
+				in
+				    Table.Buffer(Ordenado)
+

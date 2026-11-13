@@ -1,0 +1,85 @@
+table Fact_PE14_Aprendices
+	lineageTag: 4bfd5785-a436-425b-a9a3-426c96636b22
+
+	column ID_REGISTRO_UUID
+		dataType: string
+		isHidden
+		lineageTag: 4edf625e-1247-4bc1-8351-a67715b88f64
+		summarizeBy: none
+		sourceColumn: ID_REGISTRO_UUID
+
+	column ID_PERIODO
+		dataType: int64
+		formatString: 0
+		lineageTag: 30a99281-658f-4f9f-a189-8aa260e04e2b
+		summarizeBy: none
+		sourceColumn: ID_PERIODO
+
+	column IdCentro
+		dataType: int64
+		formatString: 0
+		lineageTag: 1f49abe7-3e0a-4ed2-ac8d-2ad143ed8a04
+		summarizeBy: none
+		sourceColumn: IdCentro
+
+	column CODIGO_FICHA
+		dataType: int64
+		formatString: 0
+		lineageTag: f0e0d9ed-a09e-4607-bdb6-a39e4d991c13
+		summarizeBy: none
+		sourceColumn: CODIGO_FICHA
+
+	column IdPoblacion
+		dataType: int64
+		formatString: 0
+		lineageTag: 25c4ced7-bd9a-4273-bb47-83a8b35451ad
+		summarizeBy: none
+		sourceColumn: IdPoblacion
+
+	column NombrePoblacion
+		dataType: string
+		isHidden
+		lineageTag: 7b0817fe-6a94-4169-9362-ddfbb9bc0416
+		summarizeBy: none
+		sourceColumn: NombrePoblacion
+
+	column Cantidad_Aprendices
+		dataType: int64
+		formatString: #,##0
+		lineageTag: c40c158d-caf2-4ebc-8dee-727472b1c829
+		summarizeBy: sum
+		sourceColumn: Cantidad_Aprendices
+
+	partition Fact_PE14_Aprendices = m
+		mode: import
+		source =
+				let
+				    Ruta = RutaCurados & "\pe14",
+				    Archivos = try Folder.Files(Ruta) otherwise #table({"Content", "Name", "Extension"}, {}),
+				    Csvs = Table.SelectRows(Archivos, each Text.Lower([Extension]) = ".csv"),
+				    Columnas = {"ID_REGISTRO_UUID", "ID_PERIODO", "IdCentro", "CODIGO_FICHA", "IdPoblacion", "NombrePoblacion", "Cantidad_Aprendices"},
+				    Esquema = type table [
+				        ID_REGISTRO_UUID = text, ID_PERIODO = number, IdCentro = number, CODIGO_FICHA = number,
+				        IdPoblacion = number, NombrePoblacion = text, Cantidad_Aprendices = number
+				    ],
+				    Tablas = List.Transform(Table.ToRecords(Csvs), each
+				        let
+				            t = Table.PromoteHeaders(Csv.Document([Content], [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv])),
+				            tipado = Table.TransformColumnTypes(t, {
+				                {"ID_PERIODO", Int64.Type}, {"IdCentro", Int64.Type}, {"CODIGO_FICHA", Int64.Type},
+				                {"IdPoblacion", Int64.Type}, {"Cantidad_Aprendices", Int64.Type}
+				            })
+				        in
+				            Table.SelectColumns(tipado, Columnas)),
+				    Base = if List.IsEmpty(Tablas) then #table(Esquema, {}) else Table.Combine(Tablas),
+				    ConDimension = Table.NestedJoin(Base, {"NombrePoblacion"}, DimPoblacion, {"NombrePoblacion"}, "DimPob", JoinKind.LeftOuter),
+				    Expandido = Table.ExpandTableColumn(ConDimension, "DimPob", {"IdPoblacion"}, {"IdPoblacionDim"}),
+				    ConId = Table.AddColumn(Expandido, "IdPoblacionFinal", each if [IdPoblacionDim] = null then 9999 else [IdPoblacionDim], Int64.Type),
+				    Final = Table.SelectColumns(ConId, {"ID_REGISTRO_UUID", "ID_PERIODO", "IdCentro", "CODIGO_FICHA", "IdPoblacionFinal", "NombrePoblacion", "Cantidad_Aprendices"}),
+				    Renombrado = Table.RenameColumns(Final, {{"IdPoblacionFinal", "IdPoblacion"}}),
+				    Unicos = Table.Distinct(Renombrado, {"ID_REGISTRO_UUID"})
+				in
+				    Table.Buffer(Unicos)
+
+	annotation PBI_ResultType = Exception
+

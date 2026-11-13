@@ -1,0 +1,46 @@
+table DimEstrategia
+	lineageTag: 1dd48280-6abd-4547-8c19-e9714b5e9013
+
+	column IdEstrategia
+		dataType: double
+		formatString: 0
+		lineageTag: dba4a281-2f4f-444c-8d93-882771e1fb4b
+		summarizeBy: none
+		sourceColumn: IdEstrategia
+
+	column NombreEstrategia
+		dataType: string
+		lineageTag: 802b70aa-2ef6-41bd-9722-6822ca2f7257
+		summarizeBy: none
+		sourceColumn: NombreEstrategia
+		sortByColumn: Orden
+
+	column Orden
+		dataType: double
+		isHidden
+		formatString: 0
+		lineageTag: 4084c619-b8c0-4401-ad34-ba19de51fc9c
+		summarizeBy: none
+		sourceColumn: Orden
+
+	partition DimEstrategia = m
+		mode: import
+		source =
+				let
+				    Origen = #table(
+				        type table [IdEstrategia = number, NombreEstrategia = text, Orden = number],
+				        {
+				            {1, "Regular", 1},
+				            {2, "Presencial", 2},
+				            {3, "Virtual", 3},
+				            {4, "A Distancia", 4},
+				            {5, "CampeSENA", 5},
+				            {6, "Full Popular", 6},
+				            {7, "FIC", 7},
+				            {8, "Articulaci#(00F3)n con la Media", 8},
+				            {9, "Especial", 9}
+				        }
+				    )
+				in
+				    Origen
+

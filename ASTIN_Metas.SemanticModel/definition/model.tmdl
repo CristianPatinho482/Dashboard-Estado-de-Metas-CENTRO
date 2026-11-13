@@ -1,0 +1,35 @@
+model Model
+	culture: es-CO
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		fastCombine
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_IgnorePrivacyLevels = true
+
+annotation PBI_QueryOrder = ["FactMetas","Fact_PE04_Fichas","Fact_PE14_Aprendices","DimPeriodo","DimCategoria","DimNivelFormacion","DimEstrategia","DimCentro","Dim_Ficha_Programa","DimPoblacion","_Control_Metas","_Auditoria_Ingesta","RutaMetas","RutaPE04","RutaPE14","RutaCurados","AnioPorDefecto"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table FactMetas
+ref table Fact_PE04_Fichas
+ref table Fact_PE14_Aprendices
+ref table DimPeriodo
+ref table DimCategoria
+ref table DimNivelFormacion
+ref table DimEstrategia
+ref table DimCentro
+ref table Dim_Ficha_Programa
+ref table DimPoblacion
+ref table _Control_Metas
+ref table _Auditoria_Ingesta
+ref table _Medidas_ASTIN
+ref table DateTableTemplate_b17db4b4-0fcc-4372-97f4-728e29138837
+ref table LocalDateTable_9312ce10-c781-494c-a50d-25a185c6de43
+ref table LocalDateTable_8ba1b73b-7938-4421-a514-ffe1ca26a9cc
+ref table LocalDateTable_8b88d491-0e3c-4e7c-971c-d0f8c7f37676
+

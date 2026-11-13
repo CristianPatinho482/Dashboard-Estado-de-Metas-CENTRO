@@ -1,0 +1,74 @@
+table Dim_Ficha_Programa
+	lineageTag: 8480ad98-3cf8-42b6-8c69-3b12acd740bd
+
+	column CODIGO_FICHA
+		dataType: int64
+		formatString: 0
+		lineageTag: 257cd364-b624-4f2c-9c2f-548f342a9636
+		summarizeBy: none
+		sourceColumn: CODIGO_FICHA
+
+	column NOMBRE_PROGRAMA
+		dataType: string
+		lineageTag: fdd8ba90-44d3-4e3c-8dff-5ce41a02b5d6
+		summarizeBy: none
+		sourceColumn: NOMBRE_PROGRAMA
+
+	column CODIGO_JORNADA
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: bad2c088-ec27-46bb-b1df-014f307b22e8
+		summarizeBy: none
+		sourceColumn: CODIGO_JORNADA
+
+	column NOMBRE_JORNADA
+		dataType: string
+		lineageTag: 58f27555-8080-4169-a297-3a9f5b9c22d0
+		summarizeBy: none
+		sourceColumn: NOMBRE_JORNADA
+
+	column MODALIDAD_FORMACION
+		dataType: string
+		lineageTag: 56d9a9e0-a225-4515-90b4-7c97b5a4e89d
+		summarizeBy: none
+		sourceColumn: MODALIDAD_FORMACION
+
+	column NIVEL_FORMACION
+		dataType: string
+		lineageTag: ff10aa22-6833-41c8-9f9c-5ce51fc4061f
+		summarizeBy: none
+		sourceColumn: NIVEL_FORMACION
+
+	column IdCentro
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9fe74c1c-45a0-4068-96fe-3cc6376973f9
+		summarizeBy: none
+		sourceColumn: IdCentro
+
+	column UltimoPeriodo
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 182e20af-f958-4ae8-939d-384fd646ad0a
+		summarizeBy: none
+		sourceColumn: UltimoPeriodo
+
+	partition Dim_Ficha_Programa = m
+		mode: import
+		source =
+				let
+				    Base = Fact_PE04_Fichas,
+				    Ordenado = Table.Sort(Base, {{"CODIGO_FICHA", Order.Ascending}, {"ID_PERIODO", Order.Descending}}),
+				    Unicos = Table.Distinct(Ordenado, {"CODIGO_FICHA"}),
+				    Seleccion = Table.SelectColumns(Unicos, {
+				        "CODIGO_FICHA", "NOMBRE_PROGRAMA", "CODIGO_JORNADA", "NOMBRE_JORNADA",
+				        "MODALIDAD_FORMACION", "NIVEL_FORMACION", "IdCentro", "ID_PERIODO"
+				    }),
+				    Renombrado = Table.RenameColumns(Seleccion, {{"ID_PERIODO", "UltimoPeriodo"}}),
+				    Final = Table.Sort(Renombrado, {{"CODIGO_FICHA", Order.Ascending}})
+				in
+				    Table.Buffer(Final)
+

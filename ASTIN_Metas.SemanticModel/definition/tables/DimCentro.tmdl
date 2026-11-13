@@ -1,0 +1,45 @@
+table DimCentro
+	lineageTag: 2ef5c3ef-e1f7-4437-b6b1-c132bf282536
+
+	column IdCentro
+		dataType: double
+		formatString: 0
+		lineageTag: 57cff43b-b041-47ea-b71e-87d087b86044
+		summarizeBy: none
+		sourceColumn: IdCentro
+
+	column NombreCentro
+		dataType: string
+		lineageTag: 8d94899f-29dd-46d1-b07c-ce7aa8a2792f
+		summarizeBy: none
+		sourceColumn: NombreCentro
+
+	column NombreRegional
+		dataType: string
+		lineageTag: 27f1bb41-2537-4765-8d1c-fb7b45b29fe8
+		summarizeBy: none
+		sourceColumn: NombreRegional
+
+	column CodigoRegional
+		dataType: double
+		isHidden
+		formatString: 0
+		lineageTag: 7ac3cd45-2a7e-4f9b-821c-16f8e9c70656
+		summarizeBy: sum
+		sourceColumn: CodigoRegional
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimCentro = m
+		mode: import
+		source =
+				let
+				    Origen = #table(
+				        type table [IdCentro = number, NombreCentro = text, NombreRegional = text, CodigoRegional = number],
+				        {
+				            {9230, "Centro Nacional de Asistencia T#(00E9)cnica a la Industria - ASTIN", "Regional Valle", 76}
+				        }
+				    )
+				in
+				    Origen
+

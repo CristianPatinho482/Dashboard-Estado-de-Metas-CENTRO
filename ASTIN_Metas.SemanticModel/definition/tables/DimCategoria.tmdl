@@ -1,0 +1,39 @@
+table DimCategoria
+	lineageTag: 409466c3-382d-4cbb-b258-036e0fc9a70a
+
+	column IdCategoria
+		dataType: double
+		formatString: 0
+		lineageTag: 8d9e8ed6-4f8f-47b4-b35d-1231cb47b7f2
+		summarizeBy: none
+		sourceColumn: IdCategoria
+
+	column NombreCategoria
+		dataType: string
+		lineageTag: dfe7b2b1-5ad7-4444-810c-c5afe73dc546
+		summarizeBy: none
+		sourceColumn: NombreCategoria
+		sortByColumn: Orden
+
+	column Orden
+		dataType: double
+		isHidden
+		formatString: 0
+		lineageTag: cc8a59fc-0a25-4f22-a747-6feecaa61de2
+		summarizeBy: none
+		sourceColumn: Orden
+
+	partition DimCategoria = m
+		mode: import
+		source =
+				let
+				    Origen = #table(
+				        type table [IdCategoria = number, NombreCategoria = text, Orden = number],
+				        {
+				            {1, "Formaci#(00F3)n Titulada", 1},
+				            {2, "Formaci#(00F3)n Complementaria", 2}
+				        }
+				    )
+				in
+				    Origen
+

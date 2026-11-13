@@ -1,0 +1,304 @@
+// Catálogo de medidas DAX - Sistema de control e información ASTIN
+
+// ===== 01 Metas =====
+
+// Meta anual del centro según los indicadores cargados.
+Meta_Total =
+    SUM ( FactMetas[Meta] )
+    // formatString: #,##0
+
+// Ejecución acumulada reportada en el archivo de metas.
+Ejecucion_Total =
+    SUM ( FactMetas[Ejecucion] )
+    // formatString: #,##0
+
+// Ejecución / meta.
+Porc_Cumplimiento_Metas =
+    DIVIDE ( [Ejecucion_Total], [Meta_Total], 0 )
+    // formatString: 0.0%
+
+// Meta menos ejecución.
+Brecha_Metas =
+    [Meta_Total] - [Ejecucion_Total]
+    // formatString: #,##0;-#,##0;0
+
+// Semáforo de cumplimiento.
+Estado_Meta =
+    SWITCH ( TRUE (), [Porc_Cumplimiento_Metas] >= 1, "Sobre ejecución", [Porc_Cumplimiento_Metas] >= 0.9, "En ruta", [Porc_Cumplimiento_Metas] >= 0.7, "Vulnerable", "Bajo" )
+
+// Ejecución del periodo inmediatamente anterior.
+Ejecucion_Mes_Anterior =
+    VAR p = MAX ( DimPeriodo[IdPeriodo] )
+    VAR anterior = IF ( MOD ( p, 100 ) = 1, p - 89, p - 1 )
+    RETURN CALCULATE ( [Ejecucion_Total], REMOVEFILTERS ( DimPeriodo ), DimPeriodo[IdPeriodo] = anterior )
+    // formatString: #,##0
+
+// Variación porcentual de la ejecución frente al mes anterior.
+Variacion_Ejecucion_MoM =
+    DIVIDE ( [Ejecucion_Total] - [Ejecucion_Mes_Anterior], [Ejecucion_Mes_Anterior] )
+    // formatString: 0.0%;-0.0%;0.0%
+
+// Ejecución incremental del mes (la ejecución de Metas es acumulada).
+Ejecucion_Incremental =
+    [Ejecucion_Total] - [Ejecucion_Mes_Anterior]
+    // formatString: #,##0;-#,##0;0
+
+// ===== 06 Control =====
+
+// Meta oficial del encabezado del archivo, para conciliación.
+Meta_Oficial_Total =
+    SUM ( _Control_Metas[Meta_Oficial] )
+    // formatString: #,##0
+
+// Ejecución oficial del encabezado del archivo, para conciliación.
+Ejecucion_Oficial_Total =
+    SUM ( _Control_Metas[Ejecucion_Oficial] )
+    // formatString: #,##0
+
+// Diferencia entre suma de indicadores y meta oficial.
+Diferencia_Meta_Oficial =
+    [Meta_Total] - [Meta_Oficial_Total]
+    // formatString: #,##0;-#,##0;0
+
+// Diferencia entre suma de indicadores y ejecución oficial.
+Diferencia_Ejecucion_Oficial =
+    [Ejecucion_Total] - [Ejecucion_Oficial_Total]
+    // formatString: #,##0;-#,##0;0
+
+// ===== 02 PE-04 =====
+
+// Aprendices matriculados en las fichas del periodo.
+Total_Matriculados =
+    SUM ( Fact_PE04_Fichas[APRENDICES_MATRICULADOS] )
+    // formatString: #,##0
+
+// Aprendices activos reportados por PE-04.
+Total_Activos =
+    SUM ( Fact_PE04_Fichas[APRENDICES_ACTIVOS] )
+    // formatString: #,##0
+
+// Derivado: matriculados menos activos (no activos / retirados).
+Total_Cancelados =
+    SUM ( Fact_PE04_Fichas[APRENDICES_CANCELADOS] )
+    // formatString: #,##0
+
+// Suma de la intensidad horaria de las fichas (no horas-cronómetro).
+Total_Horas_Ejecutadas =
+    SUM ( Fact_PE04_Fichas[TOTAL_HORAS] )
+    // formatString: #,##0.0
+
+// Activos / matriculados.
+Tasa_Activos =
+    DIVIDE ( [Total_Activos], [Total_Matriculados] )
+    // formatString: 0.0%
+
+// No activos / matriculados.
+Tasa_Cancelacion =
+    DIVIDE ( [Total_Cancelados], [Total_Matriculados] )
+    // formatString: 0.0%
+
+// Fichas únicas del periodo.
+Fichas_Atendidas =
+    DISTINCTCOUNT ( Fact_PE04_Fichas[CODIGO_FICHA] )
+    // formatString: #,##0
+
+// Promedio de aprendices por ficha.
+Promedio_Aprendices_Ficha =
+    DIVIDE ( [Total_Matriculados], [Fichas_Atendidas] )
+    // formatString: #,##0.0
+
+// Promedio de intensidad horaria por ficha.
+Promedio_Horas_Ficha =
+    DIVIDE ( [Total_Horas_Ejecutadas], [Fichas_Atendidas] )
+    // formatString: #,##0.0
+
+// ===== 03 PE-14 =====
+
+// Suma de marcaciones de población del PE-14.
+Total_Aprendices_PE14 =
+    SUM ( Fact_PE14_Aprendices[Cantidad_Aprendices] )
+    // formatString: #,##0
+
+// Marcaciones en poblaciones vulnerables (excluye NINGUNA).
+Total_Poblacion_Vulnerable =
+    CALCULATE ( [Total_Aprendices_PE14], DimPoblacion[EsVulnerable] = 1 )
+    // formatString: #,##0
+
+// Poblaciones desplazadas por la violencia definidas en la especificación.
+Total_Desplazados_Violencia =
+    CALCULATE (
+        [Total_Aprendices_PE14],
+        DimPoblacion[NombrePoblacion] IN {
+            "DESPLAZADOS_DISCAPACITADOS",
+            "DESPLAZADOS_POR_FENOMENOS_NATURALES",
+            "DESPLAZADOS_POR_FENOMENOS_NATURALES_CABEZA_DE_FAMILIA",
+            "DESPLAZADOS_POR_LA_VIOLENCIA",
+            "AFROCOLOMBIANOS_DESPLAZADOS_POR_LA_VIOLENCIA",
+            "AFROCOLOMBIANOS_DESPLAZADOS_POR_LA_VIOLENCIA_CABEZA_DE_FAMILIA",
+            "INDIGENAS",
+            "INDIGENAS_DESPLAZADOS_POR_LA_VIOLENCIA_CABEZA_DE_FAMILIA"
+        }
+    )
+    // formatString: #,##0
+
+// Fichas con registro PE-14.
+Fichas_Con_Caracterizacion =
+    DISTINCTCOUNT ( Fact_PE14_Aprendices[CODIGO_FICHA] )
+    // formatString: #,##0
+
+// Fichas con PE-14 / fichas PE-04.
+Cobertura_Caracterizacion =
+    DIVIDE ( [Fichas_Con_Caracterizacion], [Fichas_Atendidas] )
+    // formatString: 0.0%
+
+// Peso de las poblaciones vulnerables.
+Participacion_Vulnerable =
+    DIVIDE ( [Total_Poblacion_Vulnerable], [Total_Aprendices_PE14] )
+    // formatString: 0.0%
+
+// Poblaciones con al menos un aprendiz marcado.
+Poblaciones_Con_Registro =
+    CALCULATE ( DISTINCTCOUNT ( Fact_PE14_Aprendices[IdPoblacion] ), Fact_PE14_Aprendices[Cantidad_Aprendices] > 0 )
+    // formatString: #,##0
+
+// ===== 04 Comparativo =====
+
+// Control de consistencia PE-04 vs PE-14.
+Brecha_PE04_PE14 =
+    [Total_Matriculados] - [Total_Aprendices_PE14]
+    // formatString: #,##0;-#,##0;0
+
+// Matriculados PE-04 frente a la meta.
+Cumplimiento_PE04_vs_Meta =
+    DIVIDE ( [Total_Matriculados], [Meta_Total] )
+    // formatString: 0.0%
+
+// Intensidad horaria promedio por aprendiz.
+Horas_Por_Aprendiz =
+    DIVIDE ( [Total_Horas_Ejecutadas], [Total_Matriculados] )
+    // formatString: #,##0.0
+
+// ===== 05 Último corte =====
+
+// Último periodo visible en el contexto de filtro.
+Periodo_Actual =
+    FORMAT ( MAX ( DimPeriodo[IdPeriodo] ), "000000" )
+
+// Meta del último periodo con archivo de metas.
+Meta_Actual =
+    CALCULATE ( [Meta_Total], LASTNONBLANK ( FactMetas[IdPeriodo], [Meta_Total] ) )
+    // formatString: #,##0
+
+// Ejecución del último periodo con archivo de metas.
+Ejecucion_Actual =
+    CALCULATE ( [Ejecucion_Total], LASTNONBLANK ( FactMetas[IdPeriodo], [Ejecucion_Total] ) )
+    // formatString: #,##0
+
+// Cumplimiento del último corte.
+Cumplimiento_Actual =
+    DIVIDE ( [Ejecucion_Actual], [Meta_Actual] )
+    // formatString: 0.0%
+
+// Matriculados del último periodo con PE-04.
+Matriculados_Actual =
+    CALCULATE ( [Total_Matriculados], LASTNONBLANK ( Fact_PE04_Fichas[ID_PERIODO], [Total_Matriculados] ) )
+    // formatString: #,##0
+
+// Activos del último periodo con PE-04.
+Activos_Actual =
+    CALCULATE ( [Total_Activos], LASTNONBLANK ( Fact_PE04_Fichas[ID_PERIODO], [Total_Activos] ) )
+    // formatString: #,##0
+
+// Fichas del último periodo con PE-04.
+Fichas_Actual =
+    CALCULATE ( [Fichas_Atendidas], LASTNONBLANK ( Fact_PE04_Fichas[ID_PERIODO], [Fichas_Atendidas] ) )
+    // formatString: #,##0
+
+// Aprendices caracterizados en el último periodo con PE-14.
+PE14_Actual =
+    CALCULATE ( [Total_Aprendices_PE14], LASTNONBLANK ( Fact_PE14_Aprendices[ID_PERIODO], [Total_Aprendices_PE14] ) )
+    // formatString: #,##0
+
+// Desplazados por violencia en el último periodo con PE-14.
+Desplazados_Actual =
+    CALCULATE ( [Total_Desplazados_Violencia], LASTNONBLANK ( Fact_PE14_Aprendices[ID_PERIODO], [Total_Desplazados_Violencia] ) )
+    // formatString: #,##0
+
+// Brecha del último corte de metas.
+Brecha_Actual =
+    [Meta_Actual] - [Ejecucion_Actual]
+    // formatString: #,##0;-#,##0;0
+
+// Último periodo PE-04 dentro del contexto de filtro.
+Periodo_PE04 =
+    CALCULATE ( MAX ( Fact_PE04_Fichas[ID_PERIODO] ), ALLSELECTED ( DimPeriodo ) )
+    // formatString: 0
+
+// Último periodo PE-14 dentro del contexto de filtro.
+Periodo_PE14 =
+    CALCULATE ( MAX ( Fact_PE14_Aprendices[ID_PERIODO] ), ALLSELECTED ( DimPeriodo ) )
+    // formatString: 0
+
+// Matriculados del último corte PE-04, respetando la categoría del visual.
+Matriculados_Ultimo =
+    VAR p = [Periodo_PE04]
+    RETURN CALCULATE ( [Total_Matriculados], Fact_PE04_Fichas[ID_PERIODO] = p )
+    // formatString: #,##0
+
+// Activos del último corte PE-04.
+Activos_Ultimo =
+    VAR p = [Periodo_PE04]
+    RETURN CALCULATE ( [Total_Activos], Fact_PE04_Fichas[ID_PERIODO] = p )
+    // formatString: #,##0
+
+// No activos del último corte PE-04.
+Cancelados_Ultimo =
+    VAR p = [Periodo_PE04]
+    RETURN CALCULATE ( [Total_Cancelados], Fact_PE04_Fichas[ID_PERIODO] = p )
+    // formatString: #,##0
+
+// Horas del último corte PE-04.
+Horas_Ultimo =
+    VAR p = [Periodo_PE04]
+    RETURN CALCULATE ( [Total_Horas_Ejecutadas], Fact_PE04_Fichas[ID_PERIODO] = p )
+    // formatString: #,##0.0
+
+// Fichas del último corte PE-04.
+Fichas_Ultimo =
+    VAR p = [Periodo_PE04]
+    RETURN CALCULATE ( [Fichas_Atendidas], Fact_PE04_Fichas[ID_PERIODO] = p )
+    // formatString: #,##0
+
+// Tasa de activos del último corte.
+Tasa_Activos_Ultimo =
+    DIVIDE ( [Activos_Ultimo], [Matriculados_Ultimo] )
+    // formatString: 0.0%
+
+// Aprendices caracterizados en el último corte PE-14.
+PE14_Ultimo =
+    VAR p = [Periodo_PE14]
+    RETURN CALCULATE ( [Total_Aprendices_PE14], Fact_PE14_Aprendices[ID_PERIODO] = p )
+    // formatString: #,##0
+
+// Población vulnerable en el último corte PE-14.
+Vulnerable_Ultimo =
+    VAR p = [Periodo_PE14]
+    RETURN CALCULATE ( [Total_Poblacion_Vulnerable], Fact_PE14_Aprendices[ID_PERIODO] = p )
+    // formatString: #,##0
+
+// Desplazados por violencia en el último corte PE-14.
+Desplazados_Ultimo =
+    VAR p = [Periodo_PE14]
+    RETURN CALCULATE ( [Total_Desplazados_Violencia], Fact_PE14_Aprendices[ID_PERIODO] = p )
+    // formatString: #,##0
+
+// Fichas con PE-14 en el último corte.
+Fichas_Caracterizadas_Ultimo =
+    VAR p = [Periodo_PE14]
+    RETURN CALCULATE ( DISTINCTCOUNT ( Fact_PE14_Aprendices[CODIGO_FICHA] ), Fact_PE14_Aprendices[ID_PERIODO] = p )
+    // formatString: #,##0
+
+// Cobertura PE-14 / PE-04 del último corte.
+Cobertura_Ultimo =
+    DIVIDE ( [Fichas_Caracterizadas_Ultimo], [Fichas_Ultimo] )
+    // formatString: 0.0%

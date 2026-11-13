@@ -1,0 +1,319 @@
+{
+  "generado": "2026-11-13T17:11:51",
+  "resumen": {
+    "periodos": 9,
+    "rango_periodos": [
+      202602,
+      202610
+    ],
+    "filas_fact_metas": 88,
+    "filas_fact_pe04": 3811,
+    "filas_fact_pe14": 116844,
+    "fichas_dim": 753,
+    "poblaciones": 52,
+    "duplicados_pe04": 0,
+    "fichas_pe14_sin_dim": 0,
+    "cancelados_negativos": 0,
+    "activos_mayores_matriculados": 0,
+    "horas_totales": 447396.96
+  },
+  "detalle_periodos": [
+    {
+      "IdPeriodo": 202602,
+      "Meta_Suma_Indicadores": 0,
+      "Ejecucion_Suma_Indicadores": 0,
+      "Indicadores": 0,
+      "Meta_Oficial": null,
+      "Ejecucion_Oficial": null,
+      "Diferencia_Meta_vs_Oficial": null,
+      "PE04_Fichas": 149,
+      "PE04_Matriculados": 5460,
+      "PE04_Activos": 5216,
+      "PE04_Cancelados": 244,
+      "PE04_Horas": 5915.22,
+      "PE14_Marcaciones": 0,
+      "PE14_Fichas": 0,
+      "Cobertura_PE14_vs_PE04": 0.0
+    },
+    {
+      "IdPeriodo": 202603,
+      "Meta_Suma_Indicadores": 0,
+      "Ejecucion_Suma_Indicadores": 0,
+      "Indicadores": 0,
+      "Meta_Oficial": null,
+      "Ejecucion_Oficial": null,
+      "Diferencia_Meta_vs_Oficial": null,
+      "PE04_Fichas": 285,
+      "PE04_Matriculados": 10215,
+      "PE04_Activos": 7693,
+      "PE04_Cancelados": 2522,
+      "PE04_Horas": 22479.98,
+      "PE14_Marcaciones": 0,
+      "PE14_Fichas": 0,
+      "Cobertura_PE14_vs_PE04": 0.0
+    },
+    {
+      "IdPeriodo": 202604,
+      "Meta_Suma_Indicadores": 31733,
+      "Ejecucion_Suma_Indicadores": 13974,
+      "Indicadores": 28,
+      "Meta_Oficial": 31733.0,
+      "Ejecucion_Oficial": 13974.0,
+      "Diferencia_Meta_vs_Oficial": 0.0,
+      "PE04_Fichas": 379,
+      "PE04_Matriculados": 13974,
+      "PE04_Activos": 9338,
+      "PE04_Cancelados": 4636,
+      "PE04_Horas": 34992.47,
+      "PE14_Marcaciones": 0,
+      "PE14_Fichas": 0,
+      "Cobertura_PE14_vs_PE04": 0.0
+    },
+    {
+      "IdPeriodo": 202605,
+      "Meta_Suma_Indicadores": 0,
+      "Ejecucion_Suma_Indicadores": 0,
+      "Indicadores": 0,
+      "Meta_Oficial": null,
+      "Ejecucion_Oficial": null,
+      "Diferencia_Meta_vs_Oficial": null,
+      "PE04_Fichas": 453,
+      "PE04_Matriculados": 16926,
+      "PE04_Activos": 10248,
+      "PE04_Cancelados": 6678,
+      "PE04_Horas": 50151.28,
+      "PE14_Marcaciones": 16926,
+      "PE14_Fichas": 453,
+      "Cobertura_PE14_vs_PE04": 1.0
+    },
+    {
+      "IdPeriodo": 202606,
+      "Meta_Suma_Indicadores": 0,
+      "Ejecucion_Suma_Indicadores": 0,
+      "Indicadores": 0,
+      "Meta_Oficial": null,
+      "Ejecucion_Oficial": null,
+      "Diferencia_Meta_vs_Oficial": null,
+      "PE04_Fichas": 529,
+      "PE04_Matriculados": 19948,
+      "PE04_Activos": 11414,
+      "PE04_Cancelados": 8534,
+      "PE04_Horas": 63871.77,
+      "PE14_Marcaciones": 19948,
+      "PE14_Fichas": 529,
+      "Cobertura_PE14_vs_PE04": 1.0
+    },
+    {
+      "IdPeriodo": 202607,
+      "Meta_Suma_Indicadores": 0,
+      "Ejecucion_Suma_Indicadores": 0,
+      "Indicadores": 0,
+      "Meta_Oficial": null,
+      "Ejecucion_Oficial": null,
+      "Diferencia_Meta_vs_Oficial": null,
+      "PE04_Fichas": 594,
+      "PE04_Matriculados": 22544,
+      "PE04_Activos": 12660,
+      "PE04_Cancelados": 9884,
+      "PE04_Horas": 76426.85,
+      "PE14_Marcaciones": 22544,
+      "PE14_Fichas": 594,
+      "Cobertura_PE14_vs_PE04": 1.0
+    },
+    {
+      "IdPeriodo": 202608,
+      "Meta_Suma_Indicadores": 31823,
+      "Ejecucion_Suma_Indicadores": 25379,
+      "Indicadores": 20,
+      "Meta_Oficial": 31733.0,
+      "Ejecucion_Oficial": 25281.0,
+      "Diferencia_Meta_vs_Oficial": 90.0,
+      "PE04_Fichas": 671,
+      "PE04_Matriculados": 25431,
+      "PE04_Activos": 13631,
+      "PE04_Cancelados": 11800,
+      "PE04_Horas": 89585.72,
+      "PE14_Marcaciones": 25431,
+      "PE14_Fichas": 671,
+      "Cobertura_PE14_vs_PE04": 1.0
+    },
+    {
+      "IdPeriodo": 202609,
+      "Meta_Suma_Indicadores": 31823,
+      "Ejecucion_Suma_Indicadores": 28695,
+      "Indicadores": 20,
+      "Meta_Oficial": 31733.0,
+      "Ejecucion_Oficial": 28597.0,
+      "Diferencia_Meta_vs_Oficial": 90.0,
+      "PE04_Fichas": 751,
+      "PE04_Matriculados": 28917,
+      "PE04_Activos": 14858,
+      "PE04_Cancelados": 14059,
+      "PE04_Horas": 103973.68,
+      "PE14_Marcaciones": 0,
+      "PE14_Fichas": 0,
+      "Cobertura_PE14_vs_PE04": 0.0
+    },
+    {
+      "IdPeriodo": 202610,
+      "Meta_Suma_Indicadores": 31823,
+      "Ejecucion_Suma_Indicadores": 30103,
+      "Indicadores": 20,
+      "Meta_Oficial": 31733.0,
+      "Ejecucion_Oficial": 30046.0,
+      "Diferencia_Meta_vs_Oficial": 90.0,
+      "PE04_Fichas": 0,
+      "PE04_Matriculados": 0,
+      "PE04_Activos": 0,
+      "PE04_Cancelados": 0,
+      "PE04_Horas": 0.0,
+      "PE14_Marcaciones": 0,
+      "PE14_Fichas": 0,
+      "Cobertura_PE14_vs_PE04": null
+    }
+  ],
+  "huerfanas_pe14": [],
+  "auditoria_ingesta": [
+    {
+      "Origen": "01_Metas",
+      "Archivo": "EJECUCION METAS FORMACION CENTRO ASTIN - CORTE ABRIL 20 .xlsx",
+      "Periodo": 202604,
+      "Hoja": "30 ABRIL",
+      "Filas": 28,
+      "Estado": "OK",
+      "Detalle": "Corte día 30. Layout reconocido."
+    },
+    {
+      "Origen": "01_Metas",
+      "Archivo": "METAS FORMACION 2026 - TAYANA.xlsx",
+      "Periodo": null,
+      "Hoja": "",
+      "Filas": 0,
+      "Estado": "OMITIDO",
+      "Detalle": "Layout no reconocido o archivo sin periodo (p. ej. matriz anual de metas)."
+    },
+    {
+      "Origen": "01_Metas",
+      "Archivo": "METAS FORMACION AGOSTO 26 - 2026.xlsx",
+      "Periodo": 202608,
+      "Hoja": "Hoja1",
+      "Filas": 20,
+      "Estado": "OK",
+      "Detalle": "Corte día 0. Layout reconocido."
+    },
+    {
+      "Origen": "01_Metas",
+      "Archivo": "METAS FORMACION OCTUBRE 15 - 2026.xlsx",
+      "Periodo": 202610,
+      "Hoja": "Hoja1",
+      "Filas": 20,
+      "Estado": "OK",
+      "Detalle": "Corte día 0. Layout reconocido."
+    },
+    {
+      "Origen": "01_Metas",
+      "Archivo": "METAS FORMACION SEPTIEMBRE 28 - 2026.xlsx",
+      "Periodo": 202609,
+      "Hoja": "Hoja1",
+      "Filas": 20,
+      "Estado": "OK",
+      "Detalle": "Corte día 0. Layout reconocido."
+    },
+    {
+      "Origen": "02_Reportes_PE04",
+      "Archivo": "PE-04_ABR 2026.xlsx",
+      "Periodo": 202604,
+      "Filas": 379,
+      "Estado": "OK",
+      "Detalle": "Procesado."
+    },
+    {
+      "Origen": "02_Reportes_PE04",
+      "Archivo": "PE-04_AGO 2026.xml",
+      "Periodo": 202608,
+      "Filas": 671,
+      "Estado": "OK",
+      "Detalle": "Procesado."
+    },
+    {
+      "Origen": "02_Reportes_PE04",
+      "Archivo": "PE-04_FEB 2026.xlsx",
+      "Periodo": 202602,
+      "Filas": 149,
+      "Estado": "OK",
+      "Detalle": "Procesado."
+    },
+    {
+      "Origen": "02_Reportes_PE04",
+      "Archivo": "PE-04_JUL 2026.xlsx",
+      "Periodo": 202607,
+      "Filas": 594,
+      "Estado": "OK",
+      "Detalle": "Procesado."
+    },
+    {
+      "Origen": "02_Reportes_PE04",
+      "Archivo": "PE-04_JUN 2026.xlsx",
+      "Periodo": 202606,
+      "Filas": 529,
+      "Estado": "OK",
+      "Detalle": "Procesado."
+    },
+    {
+      "Origen": "02_Reportes_PE04",
+      "Archivo": "PE-04_MAR 2026.xlsx",
+      "Periodo": 202603,
+      "Filas": 285,
+      "Estado": "OK",
+      "Detalle": "Procesado."
+    },
+    {
+      "Origen": "02_Reportes_PE04",
+      "Archivo": "PE-04_MAY 2026.xlsx",
+      "Periodo": 202605,
+      "Filas": 453,
+      "Estado": "OK",
+      "Detalle": "Procesado."
+    },
+    {
+      "Origen": "02_Reportes_PE04",
+      "Archivo": "PE-04_SEP 2026.xlsx",
+      "Periodo": 202609,
+      "Filas": 751,
+      "Estado": "OK",
+      "Detalle": "Procesado."
+    },
+    {
+      "Origen": "03_Reportes_PE14",
+      "Archivo": "PE-14_agosto 2026.xlsx",
+      "Periodo": 202608,
+      "Filas": 34892,
+      "Estado": "OK",
+      "Detalle": "52 poblaciones desdinamizadas."
+    },
+    {
+      "Origen": "03_Reportes_PE14",
+      "Archivo": "PE-14_julio 2026.xlsx",
+      "Periodo": 202607,
+      "Filas": 30888,
+      "Estado": "OK",
+      "Detalle": "52 poblaciones desdinamizadas."
+    },
+    {
+      "Origen": "03_Reportes_PE14",
+      "Archivo": "PE-14_junio 2026.xlsx",
+      "Periodo": 202606,
+      "Filas": 27508,
+      "Estado": "OK",
+      "Detalle": "52 poblaciones desdinamizadas."
+    },
+    {
+      "Origen": "03_Reportes_PE14",
+      "Archivo": "PE-14_mayo 2026.xlsx",
+      "Periodo": 202605,
+      "Filas": 23556,
+      "Estado": "OK",
+      "Detalle": "52 poblaciones desdinamizadas."
+    }
+  ]
+}

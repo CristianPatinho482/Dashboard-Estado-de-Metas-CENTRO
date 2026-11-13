@@ -1,0 +1,77 @@
+table _Control_Metas
+	lineageTag: 35bd1839-b9e3-40bb-9ba4-a74c5ef08a31
+
+	column IdPeriodo
+		dataType: int64
+		formatString: 0
+		lineageTag: 26ff74ec-7043-42c2-b94a-b6293daf8016
+		summarizeBy: none
+		sourceColumn: IdPeriodo
+
+	column Meta_Oficial
+		dataType: double
+		formatString: #,##0
+		lineageTag: ca139009-cf38-48cd-a331-3558c1c25b2b
+		summarizeBy: sum
+		sourceColumn: Meta_Oficial
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ejecucion_Oficial
+		dataType: double
+		formatString: #,##0
+		lineageTag: a9774999-cbe4-4724-9e95-b0dac7d5c8c0
+		summarizeBy: sum
+		sourceColumn: Ejecucion_Oficial
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fuente
+		dataType: string
+		isHidden
+		lineageTag: 53a41a35-6914-4c79-a335-81163d18f04e
+		summarizeBy: none
+		sourceColumn: Fuente
+
+	column OrigenArchivo
+		dataType: string
+		isHidden
+		lineageTag: 5e569331-4649-4ab9-9c72-ef3cc8de7222
+		summarizeBy: none
+		sourceColumn: OrigenArchivo
+
+	column Hoja
+		dataType: string
+		isHidden
+		lineageTag: 1f2d9ce8-b1cf-439e-a8f0-6fd00030bdbf
+		summarizeBy: none
+		sourceColumn: Hoja
+
+	column DiaCorte
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 2de8cd3c-8490-4451-889b-641ee37a34e8
+		summarizeBy: none
+		sourceColumn: DiaCorte
+
+	partition _Control_Metas = m
+		mode: import
+		source =
+				let
+				    Ruta = RutaCurados & "\control_metas.csv",
+				    Origen = try
+				        let
+				            t = Table.PromoteHeaders(Csv.Document(File.Contents(Ruta), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv])),
+				            tipado = Table.TransformColumnTypes(t, {
+				                {"IdPeriodo", Int64.Type}, {"Meta_Oficial", type number},
+				                {"Ejecucion_Oficial", type number}, {"DiaCorte", Int64.Type}
+				            })
+				        in
+				            Table.SelectColumns(tipado, {"IdPeriodo", "Meta_Oficial", "Ejecucion_Oficial", "Fuente", "OrigenArchivo", "Hoja", "DiaCorte"})
+				        otherwise #table(type table [IdPeriodo = number, Meta_Oficial = number, Ejecucion_Oficial = number, Fuente = text, OrigenArchivo = text, Hoja = text, DiaCorte = number], {}),
+				    Ordenado = Table.Sort(Origen, {{"IdPeriodo", Order.Ascending}, {"DiaCorte", Order.Descending}}),
+				    Unicos = Table.Distinct(Ordenado, {"IdPeriodo"})
+				in
+				    Table.Buffer(Unicos)
+

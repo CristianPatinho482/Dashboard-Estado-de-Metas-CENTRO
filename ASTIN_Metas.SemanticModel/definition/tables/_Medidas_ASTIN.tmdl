@@ -1,0 +1,314 @@
+table _Medidas_ASTIN
+	lineageTag: ff6abb26-6398-4a44-90f2-ee0afe6246e0
+
+	measure Meta_Total = SUM ( FactMetas[Meta] )
+		formatString: #,##0
+		displayFolder: 01 Metas
+		lineageTag: eda18714-c997-4683-af0f-eb9642d650b9
+
+	measure Ejecucion_Total = SUM ( FactMetas[Ejecucion] )
+		formatString: #,##0
+		displayFolder: 01 Metas
+		lineageTag: 069262e5-d96b-4969-8b93-29bd83bedd3c
+
+	measure Porc_Cumplimiento_Metas = DIVIDE ( [Ejecucion_Total], [Meta_Total], 0 )
+		formatString: 0.0%
+		displayFolder: 01 Metas
+		lineageTag: ac375525-7c4c-4c52-a4a3-53adab5df65a
+
+	measure Brecha_Metas = [Meta_Total] - [Ejecucion_Total]
+		formatString: #,##0;-#,##0;0
+		displayFolder: 01 Metas
+		lineageTag: cdd6c3f8-ce01-4e4d-b5a9-0d249c3bf500
+
+	measure Estado_Meta = SWITCH ( TRUE (), [Porc_Cumplimiento_Metas] >= 1, "Sobre ejecución", [Porc_Cumplimiento_Metas] >= 0.9, "En ruta", [Porc_Cumplimiento_Metas] >= 0.7, "Vulnerable", "Bajo" )
+		displayFolder: 01 Metas
+		lineageTag: ee31c6d3-4436-432f-9fd7-5c55cf8a70e6
+
+	measure Ejecucion_Mes_Anterior =
+			VAR p = MAX ( DimPeriodo[IdPeriodo] )
+			VAR anterior = IF ( MOD ( p, 100 ) = 1, p - 89, p - 1 )
+			RETURN CALCULATE ( [Ejecucion_Total], REMOVEFILTERS ( DimPeriodo ), DimPeriodo[IdPeriodo] = anterior )
+		formatString: #,##0
+		displayFolder: 01 Metas
+		lineageTag: 5de745df-3feb-4200-881f-7aef5cfacc57
+
+	measure Variacion_Ejecucion_MoM = DIVIDE ( [Ejecucion_Total] - [Ejecucion_Mes_Anterior], [Ejecucion_Mes_Anterior] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 01 Metas
+		lineageTag: 1e6b91bf-d16b-4cdf-ba25-cee73f88c79b
+
+	measure Ejecucion_Incremental = [Ejecucion_Total] - [Ejecucion_Mes_Anterior]
+		formatString: #,##0;-#,##0;0
+		displayFolder: 01 Metas
+		lineageTag: 86305317-1adb-4efa-b54b-dc091f2d328f
+
+	measure Meta_Oficial_Total = SUM ( _Control_Metas[Meta_Oficial] )
+		formatString: #,##0
+		displayFolder: 06 Control
+		lineageTag: 0eaa44c6-2c87-4743-a200-d04b656bf91a
+
+	measure Ejecucion_Oficial_Total = SUM ( _Control_Metas[Ejecucion_Oficial] )
+		formatString: #,##0
+		displayFolder: 06 Control
+		lineageTag: 22ef8a3f-a347-4922-adda-48e34a634128
+
+	measure Diferencia_Meta_Oficial = [Meta_Total] - [Meta_Oficial_Total]
+		formatString: #,##0;-#,##0;0
+		displayFolder: 06 Control
+		lineageTag: b283d728-f8e9-48ec-9f68-e9c553cf4b2a
+
+	measure Diferencia_Ejecucion_Oficial = [Ejecucion_Total] - [Ejecucion_Oficial_Total]
+		formatString: #,##0;-#,##0;0
+		displayFolder: 06 Control
+		lineageTag: a39ed10f-5be3-42fa-9dfa-f7f2ab9eba98
+
+	measure Total_Matriculados = SUM ( Fact_PE04_Fichas[APRENDICES_MATRICULADOS] )
+		formatString: #,##0
+		displayFolder: 02 PE-04
+		lineageTag: 59de6b96-000f-46ce-bf2f-bdc04616d4df
+
+	measure Total_Activos = SUM ( Fact_PE04_Fichas[APRENDICES_ACTIVOS] )
+		formatString: #,##0
+		displayFolder: 02 PE-04
+		lineageTag: 78cb0096-1f7d-4145-a75d-c63aeb82097f
+
+	measure Total_Cancelados = SUM ( Fact_PE04_Fichas[APRENDICES_CANCELADOS] )
+		formatString: #,##0
+		displayFolder: 02 PE-04
+		lineageTag: 15181ea7-57ee-401c-9664-2b420733e4ce
+
+	measure Total_Horas_Ejecutadas = SUM ( Fact_PE04_Fichas[TOTAL_HORAS] )
+		formatString: #,##0.0
+		displayFolder: 02 PE-04
+		lineageTag: 5ad6ccaf-03f4-4072-88c3-620ea2e675f5
+
+	measure Tasa_Activos = DIVIDE ( [Total_Activos], [Total_Matriculados] )
+		formatString: 0.0%
+		displayFolder: 02 PE-04
+		lineageTag: 0fde94b5-b4de-487d-8521-4e6a3049d060
+
+	measure Tasa_Cancelacion = DIVIDE ( [Total_Cancelados], [Total_Matriculados] )
+		formatString: 0.0%
+		displayFolder: 02 PE-04
+		lineageTag: 320e79e6-fac5-4b8f-b880-73cf3d10c891
+
+	measure Fichas_Atendidas = DISTINCTCOUNT ( Fact_PE04_Fichas[CODIGO_FICHA] )
+		formatString: #,##0
+		displayFolder: 02 PE-04
+		lineageTag: d3366660-25d0-48d5-8916-1bbd189dfef8
+
+	measure Promedio_Aprendices_Ficha = DIVIDE ( [Total_Matriculados], [Fichas_Atendidas] )
+		formatString: #,##0.0
+		displayFolder: 02 PE-04
+		lineageTag: 1c712e42-ae9c-4e21-9f82-67412d2126b7
+
+	measure Promedio_Horas_Ficha = DIVIDE ( [Total_Horas_Ejecutadas], [Fichas_Atendidas] )
+		formatString: #,##0.0
+		displayFolder: 02 PE-04
+		lineageTag: 2be6406c-2e0e-4176-a13b-036546c8b571
+
+	measure Total_Aprendices_PE14 = SUM ( Fact_PE14_Aprendices[Cantidad_Aprendices] )
+		formatString: #,##0
+		displayFolder: 03 PE-14
+		lineageTag: f8483be6-ac41-494c-976a-cb3a5266e1eb
+
+	measure Total_Poblacion_Vulnerable = CALCULATE ( [Total_Aprendices_PE14], DimPoblacion[EsVulnerable] = 1 )
+		formatString: #,##0
+		displayFolder: 03 PE-14
+		lineageTag: 1ea92593-4804-4876-846c-acae26cd16e7
+
+	measure Total_Desplazados_Violencia =
+			CALCULATE (
+			    [Total_Aprendices_PE14],
+			    DimPoblacion[NombrePoblacion] IN {
+			        "DESPLAZADOS_DISCAPACITADOS",
+			        "DESPLAZADOS_POR_FENOMENOS_NATURALES",
+			        "DESPLAZADOS_POR_FENOMENOS_NATURALES_CABEZA_DE_FAMILIA",
+			        "DESPLAZADOS_POR_LA_VIOLENCIA",
+			        "AFROCOLOMBIANOS_DESPLAZADOS_POR_LA_VIOLENCIA",
+			        "AFROCOLOMBIANOS_DESPLAZADOS_POR_LA_VIOLENCIA_CABEZA_DE_FAMILIA",
+			        "INDIGENAS",
+			        "INDIGENAS_DESPLAZADOS_POR_LA_VIOLENCIA_CABEZA_DE_FAMILIA"
+			    }
+			)
+		formatString: #,##0
+		displayFolder: 03 PE-14
+		lineageTag: 4eff6e45-4d32-4c44-85bd-efcd4ae1efa0
+
+	measure Fichas_Con_Caracterizacion = DISTINCTCOUNT ( Fact_PE14_Aprendices[CODIGO_FICHA] )
+		formatString: #,##0
+		displayFolder: 03 PE-14
+		lineageTag: 03f26182-e00c-4520-b5ce-5833eb877247
+
+	measure Cobertura_Caracterizacion = DIVIDE ( [Fichas_Con_Caracterizacion], [Fichas_Atendidas] )
+		formatString: 0.0%
+		displayFolder: 03 PE-14
+		lineageTag: dc926ef7-cb4c-4c04-ae5b-450379a5b56f
+
+	measure Participacion_Vulnerable = DIVIDE ( [Total_Poblacion_Vulnerable], [Total_Aprendices_PE14] )
+		formatString: 0.0%
+		displayFolder: 03 PE-14
+		lineageTag: 45a17301-757f-48b1-8027-a13ce9b10875
+
+	measure Poblaciones_Con_Registro = CALCULATE ( DISTINCTCOUNT ( Fact_PE14_Aprendices[IdPoblacion] ), Fact_PE14_Aprendices[Cantidad_Aprendices] > 0 )
+		formatString: #,##0
+		displayFolder: 03 PE-14
+		lineageTag: 90a1ede8-1224-4598-b05d-5d134814d8b0
+
+	measure Brecha_PE04_PE14 = [Total_Matriculados] - [Total_Aprendices_PE14]
+		formatString: #,##0;-#,##0;0
+		displayFolder: 04 Comparativo
+		lineageTag: 31dc253a-842d-4387-88c4-14be5f162829
+
+	measure Cumplimiento_PE04_vs_Meta = DIVIDE ( [Total_Matriculados], [Meta_Total] )
+		formatString: 0.0%
+		displayFolder: 04 Comparativo
+		lineageTag: 348782b6-44ac-436d-b1c8-ac54d3d867e6
+
+	measure Horas_Por_Aprendiz = DIVIDE ( [Total_Horas_Ejecutadas], [Total_Matriculados] )
+		formatString: #,##0.0
+		displayFolder: 04 Comparativo
+		lineageTag: e5088ca8-4840-4be8-9b25-2dbd7c4bcd9f
+
+	measure Periodo_Actual = FORMAT ( MAX ( DimPeriodo[IdPeriodo] ), "000000" )
+		displayFolder: 05 Último corte
+		lineageTag: 01949458-6f09-4bd3-ae70-03c802ddd8a6
+
+	measure Meta_Actual = CALCULATE ( [Meta_Total], LASTNONBLANK ( FactMetas[IdPeriodo], [Meta_Total] ) )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: b78b9b9b-6250-44bc-a154-e0acac34e688
+
+	measure Ejecucion_Actual = CALCULATE ( [Ejecucion_Total], LASTNONBLANK ( FactMetas[IdPeriodo], [Ejecucion_Total] ) )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: 4765a201-3722-4d2b-bfcc-bf4197924afa
+
+	measure Cumplimiento_Actual = DIVIDE ( [Ejecucion_Actual], [Meta_Actual] )
+		formatString: 0.0%
+		displayFolder: 05 Último corte
+		lineageTag: 6ff0ca87-d26b-4b1c-8af4-5d72b7d6d122
+
+	measure Matriculados_Actual = CALCULATE ( [Total_Matriculados], LASTNONBLANK ( Fact_PE04_Fichas[ID_PERIODO], [Total_Matriculados] ) )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: 9c401127-f2e0-4eaf-9fab-ad0838fe00b7
+
+	measure Activos_Actual = CALCULATE ( [Total_Activos], LASTNONBLANK ( Fact_PE04_Fichas[ID_PERIODO], [Total_Activos] ) )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: 3c923f87-8cc3-4fc5-935e-ba652fcf9c6c
+
+	measure Fichas_Actual = CALCULATE ( [Fichas_Atendidas], LASTNONBLANK ( Fact_PE04_Fichas[ID_PERIODO], [Fichas_Atendidas] ) )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: 5e3d40aa-f0cb-49e8-b1ca-e1fca010ddff
+
+	measure PE14_Actual = CALCULATE ( [Total_Aprendices_PE14], LASTNONBLANK ( Fact_PE14_Aprendices[ID_PERIODO], [Total_Aprendices_PE14] ) )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: d6fff14f-553b-4773-9b07-3c2c9c4c1e2b
+
+	measure Desplazados_Actual = CALCULATE ( [Total_Desplazados_Violencia], LASTNONBLANK ( Fact_PE14_Aprendices[ID_PERIODO], [Total_Desplazados_Violencia] ) )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: 6f040f17-9cf8-4066-976d-35dfcb43a6b0
+
+	measure Brecha_Actual = [Meta_Actual] - [Ejecucion_Actual]
+		formatString: #,##0;-#,##0;0
+		displayFolder: 05 Último corte
+		lineageTag: 37010feb-a883-4ae1-be80-c69cf24e0c03
+
+	measure Periodo_PE04 = CALCULATE ( MAX ( Fact_PE04_Fichas[ID_PERIODO] ), ALLSELECTED ( DimPeriodo ) )
+		formatString: 0
+		displayFolder: 05 Último corte
+		lineageTag: 6a9d42c6-40c8-4d13-9db3-1b5b36d8077f
+
+	measure Periodo_PE14 = CALCULATE ( MAX ( Fact_PE14_Aprendices[ID_PERIODO] ), ALLSELECTED ( DimPeriodo ) )
+		formatString: 0
+		displayFolder: 05 Último corte
+		lineageTag: 377ae7cc-1381-459f-8054-e50e22db4dce
+
+	measure Matriculados_Ultimo =
+			VAR p = [Periodo_PE04]
+			RETURN CALCULATE ( [Total_Matriculados], Fact_PE04_Fichas[ID_PERIODO] = p )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: 80f17b67-913f-4d63-bb45-8f236cfb0c5e
+
+	measure Activos_Ultimo =
+			VAR p = [Periodo_PE04]
+			RETURN CALCULATE ( [Total_Activos], Fact_PE04_Fichas[ID_PERIODO] = p )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: af8554d7-3058-4eef-805f-fd289a38fdb9
+
+	measure Cancelados_Ultimo =
+			VAR p = [Periodo_PE04]
+			RETURN CALCULATE ( [Total_Cancelados], Fact_PE04_Fichas[ID_PERIODO] = p )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: 7d95595f-ee9b-475b-9f05-cd6a5bc4822d
+
+	measure Horas_Ultimo =
+			VAR p = [Periodo_PE04]
+			RETURN CALCULATE ( [Total_Horas_Ejecutadas], Fact_PE04_Fichas[ID_PERIODO] = p )
+		formatString: #,##0.0
+		displayFolder: 05 Último corte
+		lineageTag: 7d89ad09-b047-48d0-8277-6c88331e2b7d
+
+	measure Fichas_Ultimo =
+			VAR p = [Periodo_PE04]
+			RETURN CALCULATE ( [Fichas_Atendidas], Fact_PE04_Fichas[ID_PERIODO] = p )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: 30c76c71-9375-4268-866b-f4504cc3b4ca
+
+	measure Tasa_Activos_Ultimo = DIVIDE ( [Activos_Ultimo], [Matriculados_Ultimo] )
+		formatString: 0.0%
+		displayFolder: 05 Último corte
+		lineageTag: 9afa3cb4-4799-47a3-886c-e43fb758a11c
+
+	measure PE14_Ultimo =
+			VAR p = [Periodo_PE14]
+			RETURN CALCULATE ( [Total_Aprendices_PE14], Fact_PE14_Aprendices[ID_PERIODO] = p )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: 7233000b-408b-45ac-a0af-fd0d73289846
+
+	measure Vulnerable_Ultimo =
+			VAR p = [Periodo_PE14]
+			RETURN CALCULATE ( [Total_Poblacion_Vulnerable], Fact_PE14_Aprendices[ID_PERIODO] = p )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: 324aa68a-5715-4159-ae10-b9f99a25f803
+
+	measure Desplazados_Ultimo =
+			VAR p = [Periodo_PE14]
+			RETURN CALCULATE ( [Total_Desplazados_Violencia], Fact_PE14_Aprendices[ID_PERIODO] = p )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: 436fc7e6-27b4-4dc6-a0a2-fd90366a3d17
+
+	measure Fichas_Caracterizadas_Ultimo =
+			VAR p = [Periodo_PE14]
+			RETURN CALCULATE ( DISTINCTCOUNT ( Fact_PE14_Aprendices[CODIGO_FICHA] ), Fact_PE14_Aprendices[ID_PERIODO] = p )
+		formatString: #,##0
+		displayFolder: 05 Último corte
+		lineageTag: e698914a-0199-4594-a159-8280298ee30d
+
+	measure Cobertura_Ultimo = DIVIDE ( [Fichas_Caracterizadas_Ultimo], [Fichas_Ultimo] )
+		formatString: 0.0%
+		displayFolder: 05 Último corte
+		lineageTag: 0b67212f-96f3-4fac-ba56-1597b51a7962
+
+	column _
+		lineageTag: 1f912a24-8145-4446-b72e-6e592fcf757e
+		isNameInferred
+		sourceColumn: [_]
+
+	partition _Medidas_ASTIN = calculated
+		mode: import
+		source = ROW ( "_", 0 )
+
