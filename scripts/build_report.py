@@ -377,7 +377,7 @@ def pagina_calidad() -> list[dict]:
                 medida("Diferencia_Ejecucion_Oficial", "Dif. ejecución"),
             ],
         }, "Conciliación metas vs control oficial", z=300, tab=300),
-        visual("cal-auditoria", "tableEx", 20, 340, 760, 356, {
+        visual("cal-auditoria", "tableEx", 20, 340, 660, 370, {
             "Values": [
                 columna("_Auditoria_Ingesta", "Origen", "Origen"),
                 columna("_Auditoria_Ingesta", "Archivo", "Archivo"),
@@ -387,14 +387,15 @@ def pagina_calidad() -> list[dict]:
                 columna("_Auditoria_Ingesta", "TamanoKB", "KB"),
             ],
         }, "Archivos monitoreados en las tres carpetas", z=300, tab=301),
-        texto("cal-nota", 800, 340, 460, 356,
+        texto("cal-nota", 700, 340, 560, 370,
               "Notas de calidad:\n\n"
               "1. La suma de indicadores de metas puede diferir del total oficial del encabezado por filas de estrategia (CampeSENA / FEP) que el archivo reporta por separado.\n\n"
               "2. PE-04 no trae una columna de cancelados: se calcula como matriculados menos activos y debe leerse como 'no activos'.\n\n"
               "3. Las horas son la intensidad horaria de las fichas, no horas-cronómetro.\n\n"
               "4. PE-14 es mensual; el último dato disponible puede ser anterior al de Metas.\n\n"
-              "5. Al agregar un mes, ejecute scripts\\astin_etl.py y actualice el modelo.",
-              10, GRIS_TXT),
+              "5. Al agregar un mes, ejecute scripts\\astin_etl.py y actualice el modelo.\n\n"
+              "6. Desplazados por violencia: la tarjeta usa la definición estricta (violencia y variantes de cabeza de familia, incluidos afrocolombianos e indígenas desplazados) = 3.667 en agosto 2026. La barra muestra cada categoría por separado: 'Desplazados por la violencia' = 2.285. La lista original (3.465) incluía fenómenos naturales, discapacidad e indígenas generales; se ajustó.",
+              9, GRIS_TXT),
     ]
     return vs
 

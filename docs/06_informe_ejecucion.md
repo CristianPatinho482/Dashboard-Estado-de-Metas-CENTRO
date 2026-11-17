@@ -63,8 +63,9 @@ Se construyó desde cero un proyecto de datos y un tablero multitemporal que ree
 5. **Horas**
    - `TOTAL_HORAS` es la intensidad horaria de la ficha. La suma de cortes no representa horas-cronómetro ni horas efectivamente impartidas.
 6. **PE-14**
-   - La suma de todas las poblaciones coincide con el total de aprendices porque la categoría `NINGUNA` completa el 100%. La población vulnerable del último corte es 9.490 y los desplazados por violencia 3.465.
-   - `Total_Desplazados_Violencia` usa la lista de la especificación, corregida (`INDIGENAS`, no `NDIGENAS`).
+   - La suma de todas las poblaciones coincide con el total de aprendices porque la categoría `NINGUNA` completa el 100%. La población vulnerable del último corte es 9.490 y los desplazados estrictamente por violencia 3.667.
+   - `Total_Desplazados_Violencia` se ajustó a una definición estricta: `DESPLAZADOS_POR_LA_VIOLENCIA`, `AFROCOLOMBIANOS_DESPLAZADOS_POR_LA_VIOLENCIA` e `INDIGENAS_DESPLAZADOS_POR_LA_VIOLENCIA`, con sus variantes de cabeza de familia. Excluye fenómenos naturales, discapacidad e indígenas generales. El valor de agosto de 2026 es 3.667.
+- La lista original de la especificación sumaba 3.465 porque incluía `DESPLAZADOS_DISCAPACITADOS`, fenómenos naturales e `INDIGENAS` general, y omitía `INDIGENAS_DESPLAZADOS_POR_LA_VIOLENCIA` (378). La diferencia se explica en la página de calidad del tablero.
 
 ## 5. Entregables y estado del PBIX
 

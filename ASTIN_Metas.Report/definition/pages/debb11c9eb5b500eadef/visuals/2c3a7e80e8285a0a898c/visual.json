@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "2c3a7e80e8285a0a898c",
   "position": {
-    "x": 800,
+    "x": 700,
     "y": 340,
     "z": 100,
-    "height": 356,
-    "width": 460,
+    "height": 370,
+    "width": 560,
     "tabOrder": 100
   },
   "visual": {
@@ -20,10 +20,10 @@
               {
                 "textRuns": [
                   {
-                    "value": "Notas de calidad:\n\n1. La suma de indicadores de metas puede diferir del total oficial del encabezado por filas de estrategia (CampeSENA / FEP) que el archivo reporta por separado.\n\n2. PE-04 no trae una columna de cancelados: se calcula como matriculados menos activos y debe leerse como 'no activos'.\n\n3. Las horas son la intensidad horaria de las fichas, no horas-cronómetro.\n\n4. PE-14 es mensual; el último dato disponible puede ser anterior al de Metas.\n\n5. Al agregar un mes, ejecute scripts\\astin_etl.py y actualice el modelo.",
+                    "value": "Notas de calidad:\n\n1. La suma de indicadores de metas puede diferir del total oficial del encabezado por filas de estrategia (CampeSENA / FEP) que el archivo reporta por separado.\n\n2. PE-04 no trae una columna de cancelados: se calcula como matriculados menos activos y debe leerse como 'no activos'.\n\n3. Las horas son la intensidad horaria de las fichas, no horas-cronómetro.\n\n4. PE-14 es mensual; el último dato disponible puede ser anterior al de Metas.\n\n5. Al agregar un mes, ejecute scripts\\astin_etl.py y actualice el modelo.\n\n6. Desplazados por violencia: la tarjeta usa la definición estricta (violencia y variantes de cabeza de familia, incluidos afrocolombianos e indígenas desplazados) = 3.667 en agosto 2026. La barra muestra cada categoría por separado: 'Desplazados por la violencia' = 2.285. La lista original (3.465) incluía fenómenos naturales, discapacidad e indígenas generales; se ajustó.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
-                      "fontSize": "10pt",
+                      "fontSize": "9pt",
                       "color": "#4A4A4A"
                     }
                   }

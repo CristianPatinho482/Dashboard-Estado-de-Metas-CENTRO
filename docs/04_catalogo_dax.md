@@ -35,7 +35,7 @@ Todas las medidas viven en la tabla `_Medidas_ASTIN`, organizadas en carpetas de
 |---|---|
 | `Total_Aprendices_PE14` | `SUM(Fact_PE14_Aprendices[Cantidad_Aprendices])`. |
 | `Total_Poblacion_Vulnerable` | Total PE-14 con `EsVulnerable = 1` (excluye NINGUNA). |
-| `Total_Desplazados_Violencia` | Total PE-14 para el conjunto de poblaciones de desplazamiento/violencia de la especificación. |
+| `Total_Desplazados_Violencia` | Total PE-14 para las poblaciones desplazadas estrictamente por violencia (incluye variantes de cabeza de familia). |
 | `Fichas_Con_Caracterizacion` | Fichas con registro PE-14. |
 | `Cobertura_Caracterizacion` | Fichas PE-14 / fichas PE-04. |
 | `Participacion_Vulnerable` | Población vulnerable / total PE-14. |
@@ -44,17 +44,15 @@ Todas las medidas viven en la tabla `_Medidas_ASTIN`, organizadas en carpetas de
 `Total_Desplazados_Violencia` usa la lista:
 
 ```text
-DESPLAZADOS_DISCAPACITADOS
-DESPLAZADOS_POR_FENOMENOS_NATURALES
-DESPLAZADOS_POR_FENOMENOS_NATURALES_CABEZA_DE_FAMILIA
 DESPLAZADOS_POR_LA_VIOLENCIA
+DESPLAZADOS_POR_LA_VIOLENCIA_CABEZA_DE_FAMILIA
 AFROCOLOMBIANOS_DESPLAZADOS_POR_LA_VIOLENCIA
 AFROCOLOMBIANOS_DESPLAZADOS_POR_LA_VIOLENCIA_CABEZA_DE_FAMILIA
-INDIGENAS
+INDIGENAS_DESPLAZADOS_POR_LA_VIOLENCIA
 INDIGENAS_DESPLAZADOS_POR_LA_VIOLENCIA_CABEZA_DE_FAMILIA
 ```
 
-La especificación original traía `NDIGENAS`; se corrigió a `INDIGENAS`.
+La lista original de la especificación (que sumaba 3.465 en agosto de 2026) incluía `DESPLAZADOS_DISCAPACITADOS`, fenómenos naturales e `INDIGENAS` general, y omitía `INDIGENAS_DESPLAZADOS_POR_LA_VIOLENCIA`. Se ajustó a la definición estricta de violencia: **3.667** en agosto de 2026. La barra de poblaciones sigue mostrando cada categoría por separado (`DESPLAZADOS_POR_LA_VIOLENCIA` = 2.285).
 
 ## 04 Comparativo
 

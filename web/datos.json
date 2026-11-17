@@ -1,5 +1,5 @@
 {
-  "generado": "2026-11-17T09:40:49",
+  "generado": "2026-11-17T11:30:23",
   "periodos": [
     {
       "id": 202602,
@@ -48,7 +48,7 @@
     "horas": 103973.7,
     "pe14": 25431,
     "vulnerable": 9490,
-    "desplazados": 3465,
+    "desplazados": 3667,
     "cobertura": 0.8935,
     "periodoMetas": "Octubre 2026",
     "periodoPE04": "Septiembre 2026",
@@ -356,28 +356,28 @@
       "label": "Mayo 2026",
       "total": 16926,
       "vulnerable": 6936,
-      "desplazados": 2349
+      "desplazados": 2456
     },
     {
       "id": 202606,
       "label": "Junio 2026",
       "total": 19948,
       "vulnerable": 8083,
-      "desplazados": 2770
+      "desplazados": 2918
     },
     {
       "id": 202607,
       "label": "Julio 2026",
       "total": 22544,
       "vulnerable": 8790,
-      "desplazados": 3070
+      "desplazados": 3245
     },
     {
       "id": 202608,
       "label": "Agosto 2026",
       "total": 25431,
       "vulnerable": 9490,
-      "desplazados": 3465
+      "desplazados": 3667
     }
   ],
   "pe14Poblaciones": [

@@ -124,18 +124,16 @@ Total_Poblacion_Vulnerable =
     CALCULATE ( [Total_Aprendices_PE14], DimPoblacion[EsVulnerable] = 1 )
     // formatString: #,##0
 
-// Poblaciones desplazadas por la violencia definidas en la especificación.
+// Poblaciones desplazadas estrictamente por violencia (incluye variantes de cabeza de familia; excluye fenómenos naturales, discapacidad e indígenas generales).
 Total_Desplazados_Violencia =
     CALCULATE (
         [Total_Aprendices_PE14],
         DimPoblacion[NombrePoblacion] IN {
-            "DESPLAZADOS_DISCAPACITADOS",
-            "DESPLAZADOS_POR_FENOMENOS_NATURALES",
-            "DESPLAZADOS_POR_FENOMENOS_NATURALES_CABEZA_DE_FAMILIA",
             "DESPLAZADOS_POR_LA_VIOLENCIA",
+            "DESPLAZADOS_POR_LA_VIOLENCIA_CABEZA_DE_FAMILIA",
             "AFROCOLOMBIANOS_DESPLAZADOS_POR_LA_VIOLENCIA",
             "AFROCOLOMBIANOS_DESPLAZADOS_POR_LA_VIOLENCIA_CABEZA_DE_FAMILIA",
-            "INDIGENAS",
+            "INDIGENAS_DESPLAZADOS_POR_LA_VIOLENCIA",
             "INDIGENAS_DESPLAZADOS_POR_LA_VIOLENCIA_CABEZA_DE_FAMILIA"
         }
     )
