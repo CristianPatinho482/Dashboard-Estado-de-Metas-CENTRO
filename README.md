@@ -15,6 +15,26 @@ Proyecto de datos y tablero de Power BI para consolidar, de forma multitemporal 
 | Calidad | `data/qa/` | Auditoría de archivos e informe de conciliación. |
 | Documentación | `docs/` | Arquitectura, diccionario, modelo estrella, DAX, manual e informe de ejecución. |
 
+## Paquete entregable de corto plazo (2026 en adelante)
+
+Para actualizar el reporte sin Python ni pasos técnicos:
+
+| Archivo | Uso |
+|---|---|
+| `Actualizar.bat` | Doble clic: ejecuta el ETL, abre el PBIX y refresca el modelo. |
+| `Actualizar.exe` | ETL empaquetado (no requiere Python). |
+| `Reporte_Metas_ASTIN.pbix` | Reporte listo para abrir y compartir. |
+| `config.json` | Rutas de fuentes y del proyecto, nombre del PBIX. |
+| `LEEME.txt` | Resumen de uso en una página. |
+| `Manual_Actualizacion.md` / `.docx` | Manual completo, con solución de problemas. |
+| `Generar_PBIX.ps1` | Regenera el `.pbix` desde el proyecto PBIP. |
+
+Flujo mensual: copiar los archivos del mes en las carpetas de origen →
+`Actualizar.bat` → `Ctrl+S` en Power BI Desktop.
+
+El año por defecto es dinámico (`Date.Year(DateTime.LocalNow())`), por lo que el
+paquete sirve para 2027 y años siguientes sin cambios de código.
+
 ## Inicio rápido
 
 1. Ejecute el ETL:

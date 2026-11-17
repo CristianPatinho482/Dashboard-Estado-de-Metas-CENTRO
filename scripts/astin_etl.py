@@ -17,6 +17,7 @@ import csv
 import json
 import os
 import re
+import sys
 import unicodedata
 import uuid
 from collections import defaultdict
@@ -27,21 +28,34 @@ from typing import Any, Iterable
 import openpyxl
 
 # ---------------------------------------------------------------------------
-# Rutas
+# Rutas y configuración
 # ---------------------------------------------------------------------------
-BASE_PROYECTO = Path(r"C:\Users\capatino\Documents\Sistema de control e información - Estado de las metas centro ASTIN")
-BASE_FUENTES = Path(
-    r"C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e información - Estado de las metas centro ASTIN"
-)
+def _dir_base() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path(__file__).resolve().parents[1]
+
+
+BASE_PROYECTO = _dir_base()
+CONFIG_PATH = BASE_PROYECTO / "config.json"
+CONFIG: dict = {}
+if CONFIG_PATH.exists():
+    try:
+        CONFIG = json.loads(CONFIG_PATH.read_text(encoding="utf-8-sig"))
+    except Exception:
+        CONFIG = {}
+
+BASE_FUENTES = Path(CONFIG.get("ruta_fuentes") or BASE_PROYECTO)
+RUTA_PROYECTO = Path(CONFIG.get("ruta_proyecto") or BASE_PROYECTO)
 RUTA_METAS = BASE_FUENTES / "01_Metas"
 RUTA_PE04 = BASE_FUENTES / "02_Reportes_PE04"
 RUTA_PE14 = BASE_FUENTES / "03_Reportes_PE14"
 
-DATA = BASE_PROYECTO / "data"
+DATA = RUTA_PROYECTO / "data"
 CURADOS = DATA / "curated"
 QA = DATA / "qa"
 
-ANIO_POR_DEFECTO = 2026
+ANIO_POR_DEFECTO = int(CONFIG.get("anio_por_defecto") or datetime.now().year)
 
 MESES = {
     "ENERO": 1, "ENE": 1,

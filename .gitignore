@@ -3,6 +3,9 @@
 *.pbit
 *.abf
 
+# Excepción: entregable del paquete de corto plazo
+!Reporte_Metas_ASTIN.pbix
+
 # Configuración local de Power BI Desktop
 **/.pbi/localSettings.json
 **/.pbi/editorSettings.json
@@ -13,6 +16,10 @@
 data/qa/vigilante.log
 *.tmp
 tmp_*/
+*.bak
+
+# Compilación del ejecutable
+build/
 
 # Python
 __pycache__/

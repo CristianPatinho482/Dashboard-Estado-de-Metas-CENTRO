@@ -1,15 +1,21 @@
-expression RutaMetas = "C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e informaci#(00F3)n - Estado de las metas centro ASTIN\01_Metas"
-	lineageTag: 80d4a5cb-69b3-42b3-898d-5729e5dc1c6e
+expression RutaMetas = RutaFuentes & "\01_Metas"
+	lineageTag: 4dae0380-fdd1-44a2-9e79-188a322c9978
 
-expression RutaPE04 = "C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e informaci#(00F3)n - Estado de las metas centro ASTIN\02_Reportes_PE04"
-	lineageTag: f5b0a2ed-2767-47b6-9128-369bceae1d02
+expression RutaPE04 = RutaFuentes & "\02_Reportes_PE04"
+	lineageTag: b76ba5bd-e607-4017-896c-04c96a02c12c
 
-expression RutaPE14 = "C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e informaci#(00F3)n - Estado de las metas centro ASTIN\03_Reportes_PE14"
-	lineageTag: 46927ae3-d6b0-49fa-8ebb-f71bbb908864
+expression RutaPE14 = RutaFuentes & "\03_Reportes_PE14"
+	lineageTag: b3558173-071f-4a82-9d7f-1a356d290a31
 
-expression RutaCurados = "C:\Users\capatino\Documents\Sistema de control e informaci#(00F3)n - Estado de las metas centro ASTIN\data\curated"
-	lineageTag: 45c5f758-25bf-4c84-adf6-f530c8153eec
+expression RutaCurados = RutaProyecto & "\data\curated"
+	lineageTag: 3fbdb299-a6ee-403e-8fe9-45b4264735d8
 
-expression AnioPorDefecto = 2026
-	lineageTag: ad8b1302-dd18-4a1e-9136-326a78284c9e
+expression AnioPorDefecto = Date.Year(DateTime.LocalNow())
+	lineageTag: 658bf619-c6d0-4453-a39d-0f313469f058
+
+expression RutaFuentes = "C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e informaci#(00F3)n - Estado de las metas centro ASTIN"
+	lineageTag: 25c5f8bb-7367-4037-b00f-a16207362b4a
+
+expression RutaProyecto = "C:\Users\capatino\Documents\Sistema de control e informaci#(00F3)n - Estado de las metas centro ASTIN"
+	lineageTag: dad99895-dc0b-42af-9394-9fc193a928f6
 

@@ -14,12 +14,18 @@ MODEL_NAME = "ASTIN_Metas"
 MODEL_DIR = BASE / f"{MODEL_NAME}.SemanticModel"
 REPORT_DIR = BASE / f"{MODEL_NAME}.Report"
 
-RUTAS = {
-    "RutaMetas": r"C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e información - Estado de las metas centro ASTIN\01_Metas",
-    "RutaPE04": r"C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e información - Estado de las metas centro ASTIN\02_Reportes_PE04",
-    "RutaPE14": r"C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e información - Estado de las metas centro ASTIN\03_Reportes_PE14",
-    "RutaCurados": str(BASE / "data" / "curated"),
+RUTAS_BASE = {
+    "RutaFuentes": r"C:\Users\capatino\OneDrive - Servicio Nacional de Aprendizaje\BACKUP DISCO\Mis proyectos\AREA LABORAL\SENA\POWER BI\Sistema de control e información - Estado de las metas centro ASTIN",
+    "RutaProyecto": str(BASE),
 }
+
+RUTAS_DERIVADAS = {
+    "RutaMetas": 'RutaFuentes & "\\01_Metas"',
+    "RutaPE04": 'RutaFuentes & "\\02_Reportes_PE04"',
+    "RutaPE14": 'RutaFuentes & "\\03_Reportes_PE14"',
+    "RutaCurados": 'RutaProyecto & "\\data\\curated"',
+}
+
 
 TABLAS = {
     "FactMetas": {
@@ -336,9 +342,11 @@ def escribir_modelo() -> None:
 
     # Expresiones compartidas
     expresiones = []
-    for nombre, valor in RUTAS.items():
+    for nombre, valor in RUTAS_BASE.items():
         expresiones.append(f'expression {nombre} = "{m_escape_text(valor)}"')
-    expresiones.append("expression AnioPorDefecto = 2026")
+    for nombre, expr in RUTAS_DERIVADAS.items():
+        expresiones.append(f"expression {nombre} = {expr}")
+    expresiones.append("expression AnioPorDefecto = Date.Year(DateTime.LocalNow())")
     (definition / "expressions.tmdl").write_text("\n\n".join(expresiones) + "\n", encoding="utf-8")
 
     # Tablas

@@ -1,0 +1,51 @@
+========================================================================
+ REPORTE DE METAS - CENTRO ASTIN
+ Paquete entregable de corto plazo (2026 en adelante)
+========================================================================
+
+QUE HACE
+--------
+Actualiza el reporte con los archivos nuevos de Metas, PE-04 y PE-14:
+  1. Lee las fuentes (Excel/CSV) y regenera los datos curados.
+  2. Abre Reporte_Metas_ASTIN.pbix en Power BI Desktop.
+  3. Refresca el modelo y muestra el resumen de la actualizacion.
+
+ARCHIVOS DEL PAQUETE
+--------------------
+  Actualizar.bat            Doble clic para actualizar (recomendado)
+  Actualizar.exe            Motor ETL empaquetado (no requiere Python)
+  Actualizar.ps1            Orquesta ETL + apertura + refresco
+  config.json               Rutas y nombre del PBIX
+  Reporte_Metas_ASTIN.pbix  Reporte listo para usar y compartir
+  Manual_Actualizacion.md   Manual detallado
+  Manual_Actualizacion.docx Version Word del manual
+
+COMO USARLO (3 PASOS)
+---------------------
+  1. Copie los archivos del mes en las carpetas de origen:
+        01_Metas             -> Metas del mes (.xlsx)
+        02_Reportes_PE04     -> Reporte PE-04 del mes
+        03_Reportes_PE14     -> Reporte PE-14 del mes
+     (Las carpetas de origen se indican en config.json -> ruta_fuentes)
+
+  2. Doble clic en Actualizar.bat y espere el mensaje final.
+
+  3. En Power BI Desktop presione Ctrl+S para guardar el PBIX.
+
+REQUISITOS
+----------
+  - Windows 10/11 de 64 bits.
+  - Power BI Desktop instalado (Microsoft Store o instalador .exe).
+  - Excel no es necesario; el ETL lee los .xlsx directamente.
+
+IMPORTANTE
+----------
+  - No se modifican los archivos de origen.
+  - El ETL es idempotente: se puede ejecutar varias veces.
+  - Cada ejecucion deja evidencia en:
+        data\qa\informe_calidad.json
+        data\qa\actualizacion.log
+
+SOPORTE
+-------
+  Revise Manual_Actualizacion.md, seccion "Solucion de problemas".
