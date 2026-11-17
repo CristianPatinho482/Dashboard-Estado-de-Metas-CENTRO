@@ -1,0 +1,609 @@
+{
+  "generado": "2026-11-17T09:40:49",
+  "periodos": [
+    {
+      "id": 202602,
+      "label": "Febrero 2026"
+    },
+    {
+      "id": 202603,
+      "label": "Marzo 2026"
+    },
+    {
+      "id": 202604,
+      "label": "Abril 2026"
+    },
+    {
+      "id": 202605,
+      "label": "Mayo 2026"
+    },
+    {
+      "id": 202606,
+      "label": "Junio 2026"
+    },
+    {
+      "id": 202607,
+      "label": "Julio 2026"
+    },
+    {
+      "id": 202608,
+      "label": "Agosto 2026"
+    },
+    {
+      "id": 202609,
+      "label": "Septiembre 2026"
+    },
+    {
+      "id": 202610,
+      "label": "Octubre 2026"
+    }
+  ],
+  "kpis": {
+    "meta": 31823.0,
+    "ejecucion": 30103.0,
+    "cumplimiento": 0.9459510416993998,
+    "matriculados": 28917,
+    "activos": 14858,
+    "cancelados": 14059,
+    "horas": 103973.7,
+    "pe14": 25431,
+    "vulnerable": 9490,
+    "desplazados": 3465,
+    "cobertura": 0.8935,
+    "periodoMetas": "Octubre 2026",
+    "periodoPE04": "Septiembre 2026",
+    "periodoPE14": "Agosto 2026"
+  },
+  "metasPorPeriodo": [
+    {
+      "id": 202604,
+      "label": "Abril 2026",
+      "meta": 31733.0,
+      "ejecucion": 13974.0,
+      "cumplimiento": 0.4403617685059717
+    },
+    {
+      "id": 202608,
+      "label": "Agosto 2026",
+      "meta": 31823.0,
+      "ejecucion": 25379.0,
+      "cumplimiento": 0.797504949250542
+    },
+    {
+      "id": 202609,
+      "label": "Septiembre 2026",
+      "meta": 31823.0,
+      "ejecucion": 28695.0,
+      "cumplimiento": 0.9017063130440247
+    },
+    {
+      "id": 202610,
+      "label": "Octubre 2026",
+      "meta": 31823.0,
+      "ejecucion": 30103.0,
+      "cumplimiento": 0.9459510416993998
+    }
+  ],
+  "metasNivel": [
+    {
+      "nivel": "Tecnólogo",
+      "meta": 2554.0,
+      "ejecucion": 2917.0,
+      "cumplimiento": 1.1421299921691463
+    },
+    {
+      "nivel": "Técnico",
+      "meta": 1590.0,
+      "ejecucion": 1604.0,
+      "cumplimiento": 1.0088050314465409
+    },
+    {
+      "nivel": "Operario",
+      "meta": 39.0,
+      "ejecucion": 0.0,
+      "cumplimiento": 0.0
+    },
+    {
+      "nivel": "Auxiliar",
+      "meta": 60.0,
+      "ejecucion": 43.0,
+      "cumplimiento": 0.7166666666666667
+    },
+    {
+      "nivel": "Formación Complementaria",
+      "meta": 23575.0,
+      "ejecucion": 22163.0,
+      "cumplimiento": 0.9401060445387063
+    },
+    {
+      "nivel": "Bilingüismo",
+      "meta": 3960.0,
+      "ejecucion": 3334.0,
+      "cumplimiento": 0.841919191919192
+    },
+    {
+      "nivel": "Formación Especial Campesina",
+      "meta": 45.0,
+      "ejecucion": 42.0,
+      "cumplimiento": 0.9333333333333333
+    }
+  ],
+  "metasEstrategia": [
+    {
+      "estrategia": "Regular",
+      "meta": 144.0,
+      "ejecucion": 85.0
+    },
+    {
+      "estrategia": "Presencial",
+      "meta": 8620.0,
+      "ejecucion": 9055.0
+    },
+    {
+      "estrategia": "Virtual",
+      "meta": 21528.0,
+      "ejecucion": 18785.0
+    },
+    {
+      "estrategia": "CampeSENA",
+      "meta": 87.0,
+      "ejecucion": 482.0
+    },
+    {
+      "estrategia": "Full Popular",
+      "meta": 784.0,
+      "ejecucion": 949.0
+    },
+    {
+      "estrategia": "Articulación con la Media",
+      "meta": 660.0,
+      "ejecucion": 747.0
+    }
+  ],
+  "pe04PorPeriodo": [
+    {
+      "id": 202602,
+      "label": "Febrero 2026",
+      "matriculados": 5460,
+      "activos": 5216,
+      "cancelados": 244,
+      "horas": 5915.2,
+      "fichas": 149
+    },
+    {
+      "id": 202603,
+      "label": "Marzo 2026",
+      "matriculados": 10215,
+      "activos": 7693,
+      "cancelados": 2522,
+      "horas": 22480.0,
+      "fichas": 285
+    },
+    {
+      "id": 202604,
+      "label": "Abril 2026",
+      "matriculados": 13974,
+      "activos": 9338,
+      "cancelados": 4636,
+      "horas": 34992.5,
+      "fichas": 379
+    },
+    {
+      "id": 202605,
+      "label": "Mayo 2026",
+      "matriculados": 16926,
+      "activos": 10248,
+      "cancelados": 6678,
+      "horas": 50151.3,
+      "fichas": 453
+    },
+    {
+      "id": 202606,
+      "label": "Junio 2026",
+      "matriculados": 19948,
+      "activos": 11414,
+      "cancelados": 8534,
+      "horas": 63871.8,
+      "fichas": 529
+    },
+    {
+      "id": 202607,
+      "label": "Julio 2026",
+      "matriculados": 22544,
+      "activos": 12660,
+      "cancelados": 9884,
+      "horas": 76426.8,
+      "fichas": 594
+    },
+    {
+      "id": 202608,
+      "label": "Agosto 2026",
+      "matriculados": 25431,
+      "activos": 13631,
+      "cancelados": 11800,
+      "horas": 89585.7,
+      "fichas": 671
+    },
+    {
+      "id": 202609,
+      "label": "Septiembre 2026",
+      "matriculados": 28917,
+      "activos": 14858,
+      "cancelados": 14059,
+      "horas": 103973.7,
+      "fichas": 751
+    }
+  ],
+  "pe04Programas": [
+    {
+      "programa": "EXCEL AVANZADO: GESTION ESTRATEGICA DE INFORMACION",
+      "matriculados": 2160,
+      "activos": 836,
+      "fichas": 27
+    },
+    {
+      "programa": "ANALISIS EXPLORATORIO DE DATOS EN PYTHON.",
+      "matriculados": 2000,
+      "activos": 497,
+      "fichas": 25
+    },
+    {
+      "programa": "MANEJO DE HERRAMIENTAS MICROSOFT OFFICE 2016: EXCEL",
+      "matriculados": 1520,
+      "activos": 441,
+      "fichas": 19
+    },
+    {
+      "programa": "ENGLISH DOES WORK - LEVEL 1",
+      "matriculados": 1440,
+      "activos": 372,
+      "fichas": 18
+    },
+    {
+      "programa": "APLICACION DEL SISTEMA GLOBALMENTE ARMONIZADO EN EL MANEJO DE PRODUCTOS QUIMICOS",
+      "matriculados": 1280,
+      "activos": 395,
+      "fichas": 16
+    },
+    {
+      "programa": "AUTOCAD 2D",
+      "matriculados": 1040,
+      "activos": 184,
+      "fichas": 13
+    },
+    {
+      "programa": "DISEÑO Y PLANOS EN AUTOCAD 2D",
+      "matriculados": 1040,
+      "activos": 338,
+      "fichas": 13
+    },
+    {
+      "programa": "COREL DRAW - UTILIZACION DE HERRAMIENTAS DE DISEÑO VECTORIAL",
+      "matriculados": 800,
+      "activos": 62,
+      "fichas": 10
+    },
+    {
+      "programa": "ENGLISH DOES WORK - LEVEL 2",
+      "matriculados": 640,
+      "activos": 236,
+      "fichas": 8
+    },
+    {
+      "programa": "COORDINACION EN SISTEMAS INTEGRADOS DE GESTION",
+      "matriculados": 568,
+      "activos": 416,
+      "fichas": 22
+    },
+    {
+      "programa": "ESTRATEGIAS PARA EL MEJORAMIENTO DE LA COMPRENSION LECTORA",
+      "matriculados": 560,
+      "activos": 248,
+      "fichas": 7
+    },
+    {
+      "programa": "MONITOREO AMBIENTAL",
+      "matriculados": 511,
+      "activos": 442,
+      "fichas": 18
+    },
+    {
+      "programa": "APLICACION DE PROCEDIMIENTOS DE LABORATORIO QUIMICO",
+      "matriculados": 507,
+      "activos": 464,
+      "fichas": 20
+    },
+    {
+      "programa": "COORDINACION DE PROCESOS LOGISTICOS",
+      "matriculados": 478,
+      "activos": 273,
+      "fichas": 11
+    },
+    {
+      "programa": "CURSO INTRODUCTORIO A LA FORMACION PROFESIONAL INTEGRAL",
+      "matriculados": 476,
+      "activos": 445,
+      "fichas": 24
+    }
+  ],
+  "pe04Jornada": [
+    {
+      "jornada": "MIXTA",
+      "matriculados": 20178
+    },
+    {
+      "jornada": "DIURNA",
+      "matriculados": 7969
+    },
+    {
+      "jornada": "NOCTURNA",
+      "matriculados": 770
+    }
+  ],
+  "pe04Modalidad": [
+    {
+      "modalidad": "VIRTUAL",
+      "matriculados": 17985
+    },
+    {
+      "modalidad": "PRESENCIAL",
+      "matriculados": 10932
+    }
+  ],
+  "pe14PorPeriodo": [
+    {
+      "id": 202605,
+      "label": "Mayo 2026",
+      "total": 16926,
+      "vulnerable": 6936,
+      "desplazados": 2349
+    },
+    {
+      "id": 202606,
+      "label": "Junio 2026",
+      "total": 19948,
+      "vulnerable": 8083,
+      "desplazados": 2770
+    },
+    {
+      "id": 202607,
+      "label": "Julio 2026",
+      "total": 22544,
+      "vulnerable": 8790,
+      "desplazados": 3070
+    },
+    {
+      "id": 202608,
+      "label": "Agosto 2026",
+      "total": 25431,
+      "vulnerable": 9490,
+      "desplazados": 3465
+    }
+  ],
+  "pe14Poblaciones": [
+    {
+      "poblacion": "Desplazados por la violencia",
+      "cantidad": 2285
+    },
+    {
+      "poblacion": "Jóvenes vulnerables",
+      "cantidad": 2055
+    },
+    {
+      "poblacion": "Adolescente trabajador",
+      "cantidad": 1058
+    },
+    {
+      "poblacion": "Afrocolombianos desplazados por la violencia",
+      "cantidad": 1004
+    },
+    {
+      "poblacion": "Mujer cabeza de familia",
+      "cantidad": 987
+    },
+    {
+      "poblacion": "Emprendedores",
+      "cantidad": 587
+    },
+    {
+      "poblacion": "Indígenas desplazados por la violencia",
+      "cantidad": 378
+    },
+    {
+      "poblacion": "Tercera edad",
+      "cantidad": 285
+    },
+    {
+      "poblacion": "Afrocolombianos",
+      "cantidad": 140
+    },
+    {
+      "poblacion": "Campesinos",
+      "cantidad": 122
+    },
+    {
+      "poblacion": "Homicidio / masacre",
+      "cantidad": 114
+    },
+    {
+      "poblacion": "Desplazados discapacitados",
+      "cantidad": 105
+    },
+    {
+      "poblacion": "INPEC",
+      "cantidad": 105
+    },
+    {
+      "poblacion": "Negro",
+      "cantidad": 52
+    },
+    {
+      "poblacion": "Indígenas",
+      "cantidad": 52
+    }
+  ],
+  "pe14Grupos": [
+    {
+      "grupo": "Otras poblaciones",
+      "cantidad": 4987
+    },
+    {
+      "grupo": "Víctimas del conflicto",
+      "cantidad": 3975
+    },
+    {
+      "grupo": "Étnicas",
+      "cantidad": 369
+    },
+    {
+      "grupo": "Discapacidad",
+      "cantidad": 159
+    }
+  ],
+  "control": [
+    {
+      "id": 202604,
+      "label": "Abril 2026",
+      "meta": 31733.0,
+      "metaOficial": 31733.0,
+      "difMeta": 0.0,
+      "ejecucion": 13974.0,
+      "ejecucionOficial": 13974.0,
+      "difEjecucion": 0.0
+    },
+    {
+      "id": 202608,
+      "label": "Agosto 2026",
+      "meta": 31823.0,
+      "metaOficial": 31733.0,
+      "difMeta": 90.0,
+      "ejecucion": 25379.0,
+      "ejecucionOficial": 25281.0,
+      "difEjecucion": 98.0
+    },
+    {
+      "id": 202609,
+      "label": "Septiembre 2026",
+      "meta": 31823.0,
+      "metaOficial": 31733.0,
+      "difMeta": 90.0,
+      "ejecucion": 28695.0,
+      "ejecucionOficial": 28597.0,
+      "difEjecucion": 98.0
+    },
+    {
+      "id": 202610,
+      "label": "Octubre 2026",
+      "meta": 31823.0,
+      "metaOficial": 31733.0,
+      "difMeta": 90.0,
+      "ejecucion": 30103.0,
+      "ejecucionOficial": 30046.0,
+      "difEjecucion": 57.0
+    }
+  ],
+  "auditoria": [
+    {
+      "origen": "01_Metas",
+      "archivo": "EJECUCION METAS FORMACION CENTRO ASTIN - CORTE ABRIL 20 .xlsx",
+      "periodo": "202604",
+      "estado": "OK"
+    },
+    {
+      "origen": "01_Metas",
+      "archivo": "METAS FORMACION 2026 - TAYANA.xlsx",
+      "periodo": "",
+      "estado": "OMITIDO"
+    },
+    {
+      "origen": "01_Metas",
+      "archivo": "METAS FORMACION AGOSTO 26 - 2026.xlsx",
+      "periodo": "202608",
+      "estado": "OK"
+    },
+    {
+      "origen": "01_Metas",
+      "archivo": "METAS FORMACION OCTUBRE 15 - 2026.xlsx",
+      "periodo": "202610",
+      "estado": "OK"
+    },
+    {
+      "origen": "01_Metas",
+      "archivo": "METAS FORMACION SEPTIEMBRE 28 - 2026.xlsx",
+      "periodo": "202609",
+      "estado": "OK"
+    },
+    {
+      "origen": "02_Reportes_PE04",
+      "archivo": "PE-04_ABR 2026.xlsx",
+      "periodo": "202604",
+      "estado": "OK"
+    },
+    {
+      "origen": "02_Reportes_PE04",
+      "archivo": "PE-04_AGO 2026.xml",
+      "periodo": "202608",
+      "estado": "OK"
+    },
+    {
+      "origen": "02_Reportes_PE04",
+      "archivo": "PE-04_FEB 2026.xlsx",
+      "periodo": "202602",
+      "estado": "OK"
+    },
+    {
+      "origen": "02_Reportes_PE04",
+      "archivo": "PE-04_JUL 2026.xlsx",
+      "periodo": "202607",
+      "estado": "OK"
+    },
+    {
+      "origen": "02_Reportes_PE04",
+      "archivo": "PE-04_JUN 2026.xlsx",
+      "periodo": "202606",
+      "estado": "OK"
+    },
+    {
+      "origen": "02_Reportes_PE04",
+      "archivo": "PE-04_MAR 2026.xlsx",
+      "periodo": "202603",
+      "estado": "OK"
+    },
+    {
+      "origen": "02_Reportes_PE04",
+      "archivo": "PE-04_MAY 2026.xlsx",
+      "periodo": "202605",
+      "estado": "OK"
+    },
+    {
+      "origen": "02_Reportes_PE04",
+      "archivo": "PE-04_SEP 2026.xlsx",
+      "periodo": "202609",
+      "estado": "OK"
+    },
+    {
+      "origen": "03_Reportes_PE14",
+      "archivo": "PE-14_agosto 2026.xlsx",
+      "periodo": "202608",
+      "estado": "OK"
+    },
+    {
+      "origen": "03_Reportes_PE14",
+      "archivo": "PE-14_julio 2026.xlsx",
+      "periodo": "202607",
+      "estado": "OK"
+    },
+    {
+      "origen": "03_Reportes_PE14",
+      "archivo": "PE-14_junio 2026.xlsx",
+      "periodo": "202606",
+      "estado": "OK"
+    },
+    {
+      "origen": "03_Reportes_PE14",
+      "archivo": "PE-14_mayo 2026.xlsx",
+      "periodo": "202605",
+      "estado": "OK"
+    }
+  ]
+}

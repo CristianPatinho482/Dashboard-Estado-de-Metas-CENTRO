@@ -55,6 +55,24 @@ powershell -ExecutionPolicy Bypass -File scripts\vigilar_y_actualizar.ps1
 
 El vigilante detecta archivos nuevos/modificados, ejecuta el ETL y refresca el modelo abierto en Power BI mediante AMO/XMLA. El log queda en `data/qa/vigilante.log`.
 
+## Publicación en GitHub Pages
+
+GitHub Pages no puede ejecutar un `.pbix`, pero el proyecto incluye un **tablero web estático** generado desde los mismos CSV curados:
+
+```powershell
+python scripts\exportar_web.py   # actualiza web/datos.js
+```
+
+La carpeta `web/` contiene `index.html`, `datos.js`, `datos.json` y Chart.js local. El workflow `.github/workflows/pages.yml` publica automáticamente en cada push a `main`.
+
+Pasos:
+
+1. `git add . && git commit -m "Tablero web" && git push origin main`
+2. En GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+3. Espere el workflow **Deploy GitHub Pages** y abra `https://<usuario>.github.io/<repositorio>/`.
+
+Guía completa, opción de iframe de Power BI, dominio personalizado y notas de seguridad: `docs/07_publicacion_github_pages.md`.
+
 ## Rutas de origen configuradas
 
 Las rutas están en las expresiones del modelo (`RutaMetas`, `RutaPE04`, `RutaPE14`, `RutaCurados`) y en `scripts/astin_etl.py`:

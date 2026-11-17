@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estado de las metas · Centro ASTIN</title>
+<style>
+:root{
+  --green:#39A900; --green-dark:#007832; --dark:#00304D; --dark-2:#005B3A;
+  --ink:#17313F; --muted:#5D7480; --line:#DDE7EC; --bg:#F4F7F5; --card:#FFFFFF;
+  --violet:#71277A; --sky:#50E5F9; --yellow:#FDC300; --red:#C62828; --orange:#EF6C00;
+  --radius:14px; --shadow:0 6px 22px rgba(0,48,77,.08);
+  --font:"Work Sans",Calibri,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45}
+a{color:var(--dark-2)}
+.topbar{background:linear-gradient(118deg,#00304D 0%,#00304D 60%,#007832 100%);color:#fff;padding:22px 30px 20px;display:flex;justify-content:space-between;gap:20px;align-items:center;flex-wrap:wrap;border-bottom:4px solid var(--green)}
+.brand{display:flex;gap:14px;align-items:center}
+.logo{width:54px;height:54px;border-radius:12px;background:var(--green);display:grid;place-items:center;font-weight:900;font-size:18px;letter-spacing:-1px;color:#fff;flex:none}
+.topbar h1{margin:0;font-size:26px;line-height:1.12;letter-spacing:-.2px}
+.topbar p{margin:5px 0 0;color:#C9DCE6;font-size:12.5px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.pill{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);padding:6px 10px;border-radius:999px;font-size:11.5px;color:#EAF4F8;white-space:nowrap}
+.pill.green{background:rgba(57,169,0,.22);border-color:rgba(57,169,0,.45)}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;background:#fff;padding:0 22px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40;box-shadow:0 2px 10px rgba(0,50,77,.04)}
+.tab{border:0;background:transparent;padding:14px 14px 12px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tab:hover{color:var(--dark);background:#F7FAFB}
+.tab.active{color:var(--dark);border-bottom-color:var(--green)}
+main{max-width:1480px;margin:0 auto;padding:20px 24px 40px}
+.section{display:none}
+.section.active{display:block}
+.kpi-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--green)}
+.kpi.violet:before{background:var(--violet)} .kpi.red:before{background:var(--red)} .kpi.yellow:before{background:var(--yellow)} .kpi.blue:before{background:#0078D4}
+.kpi .label{font-size:10px;text-transform:uppercase;letter-spacing:.55px;color:var(--muted);font-weight:700}
+.kpi .value{font-size:24px;font-weight:800;letter-spacing:-.5px;margin:3px 0 1px;color:var(--dark);white-space:nowrap}
+.kpi .sub{font-size:10.5px;color:var(--muted)}
+.section-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:20px 0 10px}
+.section-title h2{margin:0;font-size:17px;color:var(--dark)}
+.section-title p{margin:0;color:var(--muted);font-size:12px}
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:1.05fr .95fr}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:15px 16px;min-width:0}
+.card h3{margin:0 0 2px;font-size:13.5px;color:var(--dark)}
+.card .hint{color:var(--muted);font-size:11.5px;margin-bottom:8px}
+.chart-wrap{position:relative;height:300px}
+.chart-wrap.tall{height:360px}
+.chart-wrap.short{height:220px}
+.table-wrap{overflow:auto;max-height:520px;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th{position:sticky;top:0;background:#F2F7F9;color:var(--dark);text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;z-index:2}
+td{padding:8px;border-bottom:1px solid #EDF2F4;vertical-align:middle}
+tr:hover td{background:#FAFCFD}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:10.5px;font-weight:800;white-space:nowrap}
+.badge.ok{background:#E4F4DC;color:#246B00}
+.badge.mid{background:#FFF1C6;color:#7A5600}
+.badge.bad{background:#FBDCDC;color:#9B1C1C}
+.note{background:#FFF8E1;border:1px solid #F3D48A;color:#5D4300;border-radius:12px;padding:12px 14px;font-size:12.5px;line-height:1.5}
+.note strong{color:#4A3500}
+.footer{max-width:1480px;margin:0 auto;padding:8px 24px 28px;color:var(--muted);font-size:11px}
+.bar-row{display:flex;align-items:center;gap:8px;margin:6px 0}
+.bar-row .name{width:180px;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-row .track{flex:1;height:8px;background:#E8EFF3;border-radius:999px;overflow:hidden}
+.bar-row .fill{height:100%;background:var(--green);border-radius:999px}
+.bar-row .val{width:64px;text-align:right;font-size:11.5px;font-variant-numeric:tabular-nums}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}.grid-3{grid-template-columns:1fr 1fr}.grid-2{grid-template-columns:1fr}}
+@media(max-width:720px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:1fr}.topbar{padding:18px}.topbar h1{font-size:21px}main{padding:14px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">SENA</div>
+    <div>
+      <h1>Estado de las metas · Centro ASTIN</h1>
+      <p>Sistema de control e información · formación titulada, PE-04 y PE-14</p>
+    </div>
+  </div>
+  <div class="meta">
+    <span class="pill green">Datos agregados · sin información personal</span>
+    <span class="pill" id="pillCorte">Corte: —</span>
+    <span class="pill">Fuente: 01_Metas · 02_PE04 · 03_PE14</span>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Secciones">
+  <button class="tab active" data-tab="resumen">Resumen</button>
+  <button class="tab" data-tab="metas">Metas y cumplimiento</button>
+  <button class="tab" data-tab="pe04">PE-04 Fichas</button>
+  <button class="tab" data-tab="pe14">PE-14 Caracterización</button>
+  <button class="tab" data-tab="comparativo">Comparativo</button>
+  <button class="tab" data-tab="calidad">Calidad</button>
+</nav>
+
+<main>
+  <!-- ================= RESUMEN ================= -->
+  <section id="resumen" class="section active">
+    <div class="kpi-grid" id="kpisResumen"></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Meta vs ejecución por periodo</h3>
+        <div class="hint">La ejecución de metas es acumulada al corte.</div>
+        <div class="chart-wrap"><canvas id="chartMeta"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Matriculados por jornada</h3>
+        <div class="hint" id="hintJornada">Último corte PE-04.</div>
+        <div class="chart-wrap"><canvas id="chartJornada"></canvas></div>
+      </div>
+    </div>
+    <div class="grid grid-2" style="margin-top:14px">
+      <div class="card">
+        <h3>Cumplimiento de metas por nivel</h3>
+        <div class="hint">Último corte de metas.</div>
+        <div class="chart-wrap short"><canvas id="chartNivel"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Programas con más aprendices</h3>
+        <div class="hint" id="hintProgramas">Último corte PE-04.</div>
+        <div class="chart-wrap short"><canvas id="chartProgramas"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= METAS ================= -->
+  <section id="metas" class="section">
+    <div class="kpi-grid" id="kpisMetas" style="grid-template-columns:repeat(4,1fr)"></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Metas por nivel y estrategia</h3>
+        <div class="hint">Último corte de metas. La tabla muestra el detalle por nivel.</div>
+        <div class="table-wrap" style="max-height:420px">
+          <table id="tablaMetas">
+            <thead><tr><th>Nivel</th><th class="num">Meta</th><th class="num">Ejecución</th><th class="num">Cumplimiento</th><th class="num">Brecha</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Meta vs ejecución por nivel</h3>
+        <div class="hint">Último corte de metas.</div>
+        <div class="chart-wrap tall"><canvas id="chartMetasNivel"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h3>Evolución del cumplimiento</h3>
+      <div class="hint">Ejecución acumulada / meta por periodo.</div>
+      <div class="chart-wrap short"><canvas id="chartMetasEvol"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ================= PE-04 ================= -->
+  <section id="pe04" class="section">
+    <div class="kpi-grid" id="kpisPE04" style="grid-template-columns:repeat(4,1fr)"></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Programas con más aprendices</h3>
+        <div class="hint" id="hintPE04Prog">Último corte PE-04.</div>
+        <div class="chart-wrap tall"><canvas id="chartPE04Programas"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Distribución del último corte</h3>
+        <div class="hint">Matriculados por jornada y modalidad.</div>
+        <div class="grid grid-2">
+          <div class="chart-wrap short"><canvas id="chartPE04Jornada"></canvas></div>
+          <div class="chart-wrap short"><canvas id="chartPE04Modalidad"></canvas></div>
+        </div>
+        <div class="table-wrap" style="max-height:220px;margin-top:10px">
+          <table id="tablaPE04">
+            <thead><tr><th>Programa</th><th class="num">Fichas</th><th class="num">Matriculados</th><th class="num">Activos</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PE-14 ================= -->
+  <section id="pe14" class="section">
+    <div class="kpi-grid" id="kpisPE14" style="grid-template-columns:repeat(4,1fr)"></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Aprendices en poblaciones vulnerables</h3>
+        <div class="hint" id="hintPE14Pob">Último corte PE-14.</div>
+        <div class="chart-wrap tall"><canvas id="chartPE14Poblaciones"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Por grupo poblacional</h3>
+        <div class="hint">Poblaciones vulnerables del último corte.</div>
+        <div class="chart-wrap"><canvas id="chartPE14Grupos"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h3>Evolución de la caracterización</h3>
+      <div class="hint">Total, población vulnerable y desplazados por violencia.</div>
+      <div class="chart-wrap short"><canvas id="chartPE14Evol"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ================= COMPARATIVO ================= -->
+  <section id="comparativo" class="section">
+    <div class="card">
+      <h3>PE-04 vs PE-14 por periodo</h3>
+      <div class="hint">Matriculados y aprendices caracterizados.</div>
+      <div class="chart-wrap"><canvas id="chartComp"></canvas></div>
+    </div>
+    <div class="grid grid-2" style="margin-top:14px">
+      <div class="card">
+        <h3>Detalle por periodo</h3>
+        <div class="table-wrap" style="max-height:360px">
+          <table id="tablaComp">
+            <thead><tr><th>Periodo</th><th class="num">Meta</th><th class="num">Ejecución</th><th class="num">PE-04</th><th class="num">PE-14</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Ejecución acumulada por periodo</h3>
+        <div class="chart-wrap"><canvas id="chartCompEjec"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CALIDAD ================= -->
+  <section id="calidad" class="section">
+    <div class="card">
+      <h3>Conciliación metas vs control oficial</h3>
+      <div class="hint">Diferencias entre la suma de indicadores y el total del encabezado.</div>
+      <div class="table-wrap" style="max-height:300px">
+        <table id="tablaControl">
+          <thead><tr><th>Periodo</th><th class="num">Meta indicadores</th><th class="num">Meta oficial</th><th class="num">Dif. meta</th><th class="num">Ejecución indicadores</th><th class="num">Ejecución oficial</th><th class="num">Dif. ejecución</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="grid grid-2" style="margin-top:14px">
+      <div class="card">
+        <h3>Archivos monitoreados</h3>
+        <div class="hint">Últimos archivos detectados en las tres carpetas.</div>
+        <div class="table-wrap" style="max-height:340px">
+          <table id="tablaAuditoria">
+            <thead><tr><th>Origen</th><th>Archivo</th><th>Periodo</th><th>Estado</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Notas de calidad</h3>
+        <div class="note">
+          <p><strong>1. Metas vs total oficial.</strong> La suma de indicadores puede diferir del total del encabezado por filas de estrategia (CampeSENA / FEP) que el archivo reporta por separado.</p>
+          <p><strong>2. Cancelados.</strong> PE-04 no trae una columna de cancelados; se calcula como matriculados menos activos y debe leerse como “no activos”.</p>
+          <p><strong>3. Horas.</strong> Son la intensidad horaria de las fichas, no horas-cronómetro.</p>
+          <p><strong>4. PE-14.</strong> Es mensual; el último dato disponible puede ser anterior al de Metas o PE-04.</p>
+          <p><strong>5. Actualización.</strong> Al agregar un mes, ejecute <code>scripts/astin_etl.py</code> y actualice el modelo; el tablero web se regenera con <code>scripts/exportar_web.py</code>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  Datos agregados generados automáticamente desde las carpetas 01_Metas, 02_Reportes_PE04 y 03_Reportes_PE14.
+  No se publican nombres, documentos ni información personal de aprendices.
+</footer>
+
+<script src="chart.umd.min.js"></script>
+<script src="datos.js"></script>
+<script>
+(function(){
+  const D = window.ASTIN_DATA || {};
+  const fmt = new Intl.NumberFormat('es-CO');
+  const n = v => (v == null || isNaN(v)) ? '—' : fmt.format(Math.round(v));
+  const pct = v => (v == null || isNaN(v)) ? '—' : (v * 100).toLocaleString('es-CO',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%';
+  const colors = {green:'#39A900', dark:'#00304D', teal:'#007832', violet:'#71277A', yellow:'#FDC300', red:'#C62828', sky:'#50E5F9', orange:'#EF6C00', gray:'#8A9BA5'};
+  const palette = [colors.green, colors.teal, colors.violet, colors.yellow, colors.orange, '#0078D4', colors.sky, colors.red, '#6B8E23', '#B565A7'];
+
+  Chart.defaults.font.family = 'Work Sans, Calibri, Segoe UI, sans-serif';
+  Chart.defaults.color = '#4A606C';
+  Chart.defaults.animation = false;
+  Chart.defaults.plugins.legend.labels.usePointStyle = true;
+  Chart.defaults.plugins.legend.labels.boxWidth = 8;
+
+  const k = D.kpis || {};
+  document.getElementById('pillCorte').textContent = 'Corte metas: ' + (k.periodoMetas || '—') + ' · PE-04: ' + (k.periodoPE04 || '—') + ' · PE-14: ' + (k.periodoPE14 || '—');
+
+  function kpiCard(label, value, sub, cls){
+    return `<div class="kpi ${cls||''}"><div class="label">${label}</div><div class="value">${value}</div><div class="sub">${sub||''}</div></div>`;
+  }
+
+  document.getElementById('kpisResumen').innerHTML = [
+    kpiCard('Meta vigente', n(k.meta), k.periodoMetas, ''),
+    kpiCard('Ejecución acumulada', n(k.ejecucion), k.periodoMetas, ''),
+    kpiCard('Cumplimiento', pct(k.cumplimiento), k.periodoMetas, 'yellow'),
+    kpiCard('Aprendices matriculados', n(k.matriculados), k.periodoPE04, 'blue'),
+    kpiCard('Aprendices caracterizados', n(k.pe14), k.periodoPE14, 'violet'),
+    kpiCard('Desplazados por violencia', n(k.desplazados), k.periodoPE14, 'red')
+  ].join('');
+
+  document.getElementById('kpisMetas').innerHTML = [
+    kpiCard('Meta vigente', n(k.meta), k.periodoMetas),
+    kpiCard('Ejecución', n(k.ejecucion), k.periodoMetas, 'blue'),
+    kpiCard('Cumplimiento', pct(k.cumplimiento), k.periodoMetas, 'yellow'),
+    kpiCard('Brecha meta - ejecución', n((k.meta||0) - (k.ejecucion||0)), k.periodoMetas, 'red')
+  ].join('');
+
+  document.getElementById('kpisPE04').innerHTML = [
+    kpiCard('Matriculados', n(k.matriculados), k.periodoPE04, 'blue'),
+    kpiCard('Activos', n(k.activos), k.periodoPE04),
+    kpiCard('No activos (derivado)', n(k.cancelados), k.periodoPE04, 'red'),
+    kpiCard('Horas de fichas', n(k.horas), k.periodoPE04, 'violet')
+  ].join('');
+
+  document.getElementById('kpisPE14').innerHTML = [
+    kpiCard('Aprendices caracterizados', n(k.pe14), k.periodoPE14, 'violet'),
+    kpiCard('Población vulnerable', n(k.vulnerable), k.periodoPE14, 'yellow'),
+    kpiCard('Desplazados por violencia', n(k.desplazados), k.periodoPE14, 'red'),
+    kpiCard('Cobertura PE-14 / PE-04', pct(k.cobertura), k.periodoPE14)
+  ].join('');
+
+  const baseOpts = {responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false}, plugins:{legend:{position:'bottom'}}};
+
+  // 1. Meta vs ejecución
+  const periodosAll = D.periodos || [];
+  const metaById = Object.fromEntries((D.metasPorPeriodo||[]).map(x=>[x.id,x]));
+  new Chart(document.getElementById('chartMeta'), {
+    type:'line',
+    data:{labels:periodosAll.map(x=>x.label), datasets:[
+      {label:'Meta', data:periodosAll.map(x=>metaById[x.id]?.meta ?? null), borderColor:colors.dark, backgroundColor:'rgba(0,48,77,.08)', fill:true, tension:.25, pointRadius:3, spanGaps:true},
+      {label:'Ejecución', data:periodosAll.map(x=>metaById[x.id]?.ejecucion ?? null), borderColor:colors.green, backgroundColor:'rgba(57,169,0,.12)', fill:true, tension:.25, pointRadius:3, spanGaps:true}
+    ]},
+    options:{...baseOpts, scales:{y:{beginAtZero:true, ticks:{callback:v=>n(v)}}}}
+  });
+
+  // 2. Jornada
+  const jornada = D.pe04Jornada || [];
+  document.getElementById('hintJornada').textContent = 'Último corte PE-04: ' + (k.periodoPE04||'—');
+  new Chart(document.getElementById('chartJornada'), {
+    type:'doughnut',
+    data:{labels:jornada.map(x=>x.jornada), datasets:[{data:jornada.map(x=>x.matriculados), backgroundColor:palette, borderWidth:2, borderColor:'#fff'}]},
+    options:{...baseOpts, cutout:'58%'}
+  });
+
+  // 3. Nivel
+  const niveles = D.metasNivel || [];
+  new Chart(document.getElementById('chartNivel'), {
+    type:'bar',
+    data:{labels:niveles.map(x=>x.nivel), datasets:[{label:'Cumplimiento', data:niveles.map(x=>x.cumplimiento), backgroundColor: niveles.map(x => (x.cumplimiento||0)>=1?colors.green:(x.cumplimiento||0)>=.9?colors.yellow:colors.orange), borderRadius:5}]},
+    options:{...baseOpts, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>pct(v)}}}}
+  });
+
+  // 4. Programas
+  const prog = (D.pe04Programas||[]).slice(0,10);
+  document.getElementById('hintProgramas').textContent = 'Último corte PE-04: ' + (k.periodoPE04||'—');
+  new Chart(document.getElementById('chartProgramas'), {
+    type:'bar',
+    data:{labels:prog.map(x=>x.programa.length>38?x.programa.slice(0,36)+'…':x.programa), datasets:[{label:'Matriculados', data:prog.map(x=>x.matriculados), backgroundColor:colors.green, borderRadius:5}]},
+    options:{...baseOpts, indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true, ticks:{callback:v=>n(v)}}}}
+  });
+
+  // Metas table
+  const tbMetas = document.querySelector('#tablaMetas tbody');
+  tbMetas.innerHTML = niveles.map(x=>`<tr><td>${x.nivel}</td><td class="num">${n(x.meta)}</td><td class="num">${n(x.ejecucion)}</td><td class="num">${pct(x.cumplimiento)}</td><td class="num">${n((x.meta||0)-(x.ejecucion||0))}</td></tr>`).join('');
+
+  new Chart(document.getElementById('chartMetasNivel'), {
+    type:'bar',
+    data:{labels:niveles.map(x=>x.nivel), datasets:[
+      {label:'Meta', data:niveles.map(x=>x.meta), backgroundColor:colors.dark, borderRadius:5},
+      {label:'Ejecución', data:niveles.map(x=>x.ejecucion), backgroundColor:colors.green, borderRadius:5}
+    ]},
+    options:{...baseOpts, scales:{y:{beginAtZero:true, ticks:{callback:v=>n(v)}}}}
+  });
+
+  new Chart(document.getElementById('chartMetasEvol'), {
+    type:'line',
+    data:{labels:periodosAll.map(x=>x.label), datasets:[{label:'Cumplimiento', data:periodosAll.map(x=>metaById[x.id]?.cumplimiento ?? null), borderColor:colors.green, backgroundColor:'rgba(57,169,0,.12)', fill:true, tension:.25, pointRadius:3, spanGaps:true}]},
+    options:{...baseOpts, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>pct(v)}}}}
+  });
+
+  // PE-04 charts
+  const prog04 = (D.pe04Programas||[]).slice(0,12);
+  document.getElementById('hintPE04Prog').textContent = 'Último corte PE-04: ' + (k.periodoPE04||'—');
+  new Chart(document.getElementById('chartPE04Programas'), {
+    type:'bar',
+    data:{labels:prog04.map(x=>x.programa.length>42?x.programa.slice(0,40)+'…':x.programa), datasets:[{label:'Matriculados', data:prog04.map(x=>x.matriculados), backgroundColor:colors.green, borderRadius:5}]},
+    options:{...baseOpts, indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true, ticks:{callback:v=>n(v)}}}}
+  });
+  new Chart(document.getElementById('chartPE04Jornada'), {
+    type:'doughnut',
+    data:{labels:(D.pe04Jornada||[]).map(x=>x.jornada), datasets:[{data:(D.pe04Jornada||[]).map(x=>x.matriculados), backgroundColor:palette, borderWidth:2, borderColor:'#fff'}]},
+    options:{...baseOpts, cutout:'55%', plugins:{legend:{position:'bottom'}}}
+  });
+  new Chart(document.getElementById('chartPE04Modalidad'), {
+    type:'doughnut',
+    data:{labels:(D.pe04Modalidad||[]).map(x=>x.modalidad), datasets:[{data:(D.pe04Modalidad||[]).map(x=>x.matriculados), backgroundColor:palette, borderWidth:2, borderColor:'#fff'}]},
+    options:{...baseOpts, cutout:'55%', plugins:{legend:{position:'bottom'}}}
+  });
+  document.querySelector('#tablaPE04 tbody').innerHTML = prog04.map(x=>`<tr><td>${x.programa}</td><td class="num">${n(x.fichas)}</td><td class="num">${n(x.matriculados)}</td><td class="num">${n(x.activos)}</td></tr>`).join('');
+
+  // PE-14
+  const pob = (D.pe14Poblaciones||[]).slice(0,12);
+  const pe14pob = D.pe14Poblaciones || [];
+  if (pe14pob.length) document.getElementById('hintPE14Pob').textContent = 'Último corte PE-14: ' + (k.periodoPE14||'—') + ' · poblaciones vulnerables';
+  new Chart(document.getElementById('chartPE14Poblaciones'), {
+    type:'bar',
+    data:{labels:pob.map(x=>x.poblacion.length>38?x.poblacion.slice(0,36)+'…':x.poblacion), datasets:[{label:'Aprendices', data:pob.map(x=>x.cantidad), backgroundColor:colors.violet, borderRadius:5}]},
+    options:{...baseOpts, indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true, ticks:{callback:v=>n(v)}}}}
+  });
+  new Chart(document.getElementById('chartPE14Grupos'), {
+    type:'doughnut',
+    data:{labels:(D.pe14Grupos||[]).map(x=>x.grupo), datasets:[{data:(D.pe14Grupos||[]).map(x=>x.cantidad), backgroundColor:palette, borderWidth:2, borderColor:'#fff'}]},
+    options:{...baseOpts, cutout:'56%'}
+  });
+  new Chart(document.getElementById('chartPE14Evol'), {
+    type:'line',
+    data:{labels:(D.pe14PorPeriodo||[]).map(x=>x.label), datasets:[
+      {label:'Total', data:(D.pe14PorPeriodo||[]).map(x=>x.total), borderColor:colors.violet, backgroundColor:'rgba(113,39,122,.08)', fill:true, tension:.25, pointRadius:3},
+      {label:'Vulnerable', data:(D.pe14PorPeriodo||[]).map(x=>x.vulnerable), borderColor:colors.yellow, tension:.25, pointRadius:3},
+      {label:'Desplazados', data:(D.pe14PorPeriodo||[]).map(x=>x.desplazados), borderColor:colors.red, tension:.25, pointRadius:3}
+    ]},
+    options:{...baseOpts, scales:{y:{beginAtZero:true, ticks:{callback:v=>n(v)}}}}
+  });
+
+  // Comparativo
+  const pe04p = D.pe04PorPeriodo || [];
+  const pe14p = D.pe14PorPeriodo || [];
+  const labels = Array.from(new Set([...pe04p.map(x=>x.label), ...pe14p.map(x=>x.label)])).sort((a,b)=>{
+    const pa = pe04p.find(x=>x.label===a) || pe14p.find(x=>x.label===a);
+    const pb = pe04p.find(x=>x.label===b) || pe14p.find(x=>x.label===b);
+    return (pa?.id||0)-(pb?.id||0);
+  });
+  const map04 = Object.fromEntries(pe04p.map(x=>[x.label,x.matriculados]));
+  const map14 = Object.fromEntries(pe14p.map(x=>[x.label,x.total]));
+  new Chart(document.getElementById('chartComp'), {
+    type:'line',
+    data:{labels, datasets:[
+      {label:'PE-04 matriculados', data:labels.map(x=>map04[x]??null), borderColor:colors.dark, backgroundColor:'rgba(0,48,77,.08)', fill:true, tension:.25, pointRadius:3, spanGaps:true},
+      {label:'PE-14 caracterizados', data:labels.map(x=>map14[x]??null), borderColor:colors.violet, backgroundColor:'rgba(113,39,122,.08)', fill:true, tension:.25, pointRadius:3, spanGaps:true}
+    ]},
+    options:{...baseOpts, scales:{y:{beginAtZero:true, ticks:{callback:v=>n(v)}}}}
+  });
+  const tbodyComp = document.querySelector('#tablaComp tbody');
+  tbodyComp.innerHTML = labels.map(l=>{
+    const p4 = pe04p.find(x=>x.label===l);
+    const p14 = pe14p.find(x=>x.label===l);
+    const pm = (D.metasPorPeriodo||[]).find(x=>x.label===l);
+    return `<tr><td>${l}</td><td class="num">${n(pm?.meta)}</td><td class="num">${n(pm?.ejecucion)}</td><td class="num">${n(p4?.matriculados)}</td><td class="num">${n(p14?.total)}</td></tr>`;
+  }).join('');
+
+  new Chart(document.getElementById('chartCompEjec'), {
+    type:'bar',
+    data:{labels:(D.metasPorPeriodo||[]).map(x=>x.label), datasets:[{label:'Ejecución acumulada', data:(D.metasPorPeriodo||[]).map(x=>x.ejecucion), backgroundColor:colors.teal, borderRadius:5}]},
+    options:{...baseOpts, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>n(v)}}}}
+  });
+
+  // Calidad
+  document.querySelector('#tablaControl tbody').innerHTML = (D.control||[]).map(x=>`<tr><td>${x.label}</td><td class="num">${n(x.meta)}</td><td class="num">${n(x.metaOficial)}</td><td class="num">${n(x.difMeta)}</td><td class="num">${n(x.ejecucion)}</td><td class="num">${n(x.ejecucionOficial)}</td><td class="num">${n(x.difEjecucion)}</td></tr>`).join('');
+  document.querySelector('#tablaAuditoria tbody').innerHTML = (D.auditoria||[]).slice(-30).reverse().map(x=>`<tr><td>${x.origen}</td><td>${x.archivo}</td><td>${x.periodo||'—'}</td><td><span class="badge ${x.estado==='OK'?'ok':x.estado==='ERROR'?'bad':'mid'}">${x.estado||'—'}</span></td></tr>`).join('');
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      history.replaceState(null, '', '#' + btn.dataset.tab);
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+
+  const hash = (location.hash || '').replace('#', '');
+  if (hash) {
+    const tab = document.querySelector('.tab[data-tab="' + hash + '"]');
+    if (tab) tab.click();
+  }
+})();
+</script>
+</body>
+</html>

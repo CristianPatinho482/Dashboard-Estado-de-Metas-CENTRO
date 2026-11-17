@@ -1,10 +1,19 @@
-# Binarios de Power BI (se generan desde el PBIP)
+﻿# Binarios de Power BI (se generan desde el PBIP)
 *.pbix
 *.pbit
 *.abf
+
+# Configuración local de Power BI Desktop
+**/.pbi/localSettings.json
+**/.pbi/editorSettings.json
+**/.pbi/cache.abf
 
 # Temporales y logs
 ~$*
 data/qa/vigilante.log
 *.tmp
 tmp_*/
+
+# Python
+__pycache__/
+*.pyc
