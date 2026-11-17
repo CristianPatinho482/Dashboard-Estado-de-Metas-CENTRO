@@ -133,8 +133,8 @@ No es necesario recompilar nada.
 
 El paquete ya está preparado para años futuros:
 
-- El ETL calcula el periodo a partir de las fechas de los archivos; no hay
-  listas de meses ni años fijas.
+- El ETL calcula el periodo a partir de las fechas de los archivos (reconoce
+  años 2000–2099); no hay listas de meses ni años fijas.
 - En el modelo, `AnioPorDefecto` se calcula con
   `Date.Year(DateTime.LocalNow())`, por lo que el año por defecto cambia solo.
 - Las rutas del modelo se derivan de dos expresiones base
@@ -168,7 +168,7 @@ Abra `data\qa\informe_calidad.json` y revise:
 | Filas `FactMetas` | 88 |
 | Filas `Fact_PE04_Fichas` | 3.811 |
 | Filas `Fact_PE14_Aprendices` | 116.844 |
-| Fichas (`Dim_Ficha_Programa`) | 3.811 |
+| Fichas distintas (`fichas_dim`) | 753 |
 | Desplazados por violencia (KPI, definición estricta) | 3.667 |
 
 Si los valores cambian de forma razonable al agregar un mes, la actualización

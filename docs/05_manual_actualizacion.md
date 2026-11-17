@@ -1,5 +1,10 @@
 # Manual de actualización
 
+> **Paquete entregable (uso operativo):** para la actualización mensual use
+> `Actualizar.bat` en la raíz del proyecto. No requiere Python. Consulte
+> `LEEME.txt` o `Manual_Actualizacion.md`. Esta guía describe el detalle
+> técnico del ETL y del modelo.
+
 ## 1. Agregar un mes nuevo
 
 ### Metas (01_Metas)
@@ -22,10 +27,21 @@ Copie el `.xlsx` mensual. El ETL lee la hoja `Hoja1`, detecta las 52 columnas `*
 
 ## 2. Ejecutar el ETL
 
+Opción empaquetada (recomendada, sin Python):
+
+```powershell
+.\Actualizar.exe
+```
+
+Opción con Python (desarrollo):
+
 ```powershell
 cd "C:\Users\capatino\Documents\Sistema de control e información - Estado de las metas centro ASTIN"
 python scripts\astin_etl.py
 ```
+
+Ambas leen las rutas desde `config.json` (`ruta_fuentes`, `ruta_proyecto`) y el
+año por defecto del sistema (`anio_por_defecto: null`).
 
 Salidas:
 

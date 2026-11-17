@@ -14,6 +14,7 @@
 # Temporales y logs
 ~$*
 data/qa/vigilante.log
+data/qa/actualizacion.log
 *.tmp
 tmp_*/
 *.bak
